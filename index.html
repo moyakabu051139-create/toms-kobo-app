@@ -476,6 +476,7 @@
       }
     }
 
+
     /* ===== スマホ確認画面 ===== */
     .top-tabs{position:sticky;top:0;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 12px;padding:6px;background:rgba(239,225,204,.94);border:1px solid rgba(103,67,42,.20);border-radius:14px;backdrop-filter:blur(8px);box-shadow:0 3px 10px rgba(77,48,30,.10)}
     .top-tab{min-height:46px;padding:6px 3px;border:1px solid #c7a47c;border-radius:10px;background:#fff8ef;color:#5a402f;font-size:13px;font-weight:900}
@@ -491,8 +492,7 @@
     .dash-table-wrap{overflow-x:auto;border:1px solid #d1b493;border-radius:12px;background:#fffdf8}
     .dash-table{width:100%;border-collapse:collapse;min-width:500px;font-size:13px}
     .dash-table th,.dash-table td{padding:10px 8px;border-bottom:1px solid #ead8c2;text-align:right;white-space:nowrap}
-    .dash-table th{position:sticky;top:0;background:#ead4b5;color:#4b3020;font-weight:900}
-    .dash-table th:first-child,.dash-table td:first-child{text-align:left;white-space:normal;min-width:180px}.dash-table tr:last-child td{border-bottom:0}
+    .dash-table th{background:#ead4b5;color:#4b3020;font-weight:900}.dash-table th:first-child,.dash-table td:first-child{text-align:left;white-space:normal;min-width:180px}.dash-table tr:last-child td{border-bottom:0}
     .stock-minus{color:#a44739;font-weight:900}.month-list{display:grid;gap:8px}
     .month-row{display:grid;grid-template-columns:88px 1fr 1fr;gap:8px;align-items:center;padding:11px 10px;border:1px solid #d8bea0;border-radius:11px;background:#fffaf2}
     .month-row .m{font-weight:900;color:#4b3020}.month-row .v{text-align:right;font-weight:900}
@@ -657,33 +657,25 @@
     </button>
   </div>
 
+
   </section>
 
   <section id="view-inventory" class="app-view">
     <div class="card"><div class="label">在庫一覧</div>
-      <div class="dash-toolbar">
-        <select id="inventoryStore" class="dash-filter" onchange="renderInventory()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select>
-        <button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button>
-      </div><div id="inventoryUpdated" class="dash-updated"></div><div id="inventoryContent" class="dash-loading">読み込み前です</div>
+      <div class="dash-toolbar"><select id="inventoryStore" class="dash-filter" onchange="renderInventory()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select><button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button></div>
+      <div id="inventoryUpdated" class="dash-updated"></div><div id="inventoryContent" class="dash-loading">読み込み前です</div>
     </div>
   </section>
-
   <section id="view-monthly" class="app-view">
     <div class="card"><div class="label">月別集計</div>
-      <div class="dash-toolbar">
-        <select id="monthlyStore" class="dash-filter" onchange="renderMonthly()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select>
-        <button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button>
-      </div><div id="monthlyUpdated" class="dash-updated"></div><div id="monthlyContent" class="dash-loading">読み込み前です</div>
+      <div class="dash-toolbar"><select id="monthlyStore" class="dash-filter" onchange="renderMonthly()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select><button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button></div>
+      <div id="monthlyUpdated" class="dash-updated"></div><div id="monthlyContent" class="dash-loading">読み込み前です</div>
     </div>
   </section>
-
   <section id="view-products" class="app-view">
     <div class="card"><div class="label">商品別月次販売</div>
-      <div class="dash-toolbar">
-        <select id="productStore" class="dash-filter" onchange="renderProductMonthly()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select>
-        <select id="productMonth" class="dash-filter" onchange="renderProductMonthly()"></select>
-        <button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button>
-      </div><div id="productsUpdated" class="dash-updated"></div><div id="productsContent" class="dash-loading">読み込み前です</div>
+      <div class="dash-toolbar"><select id="productStore" class="dash-filter" onchange="renderProductMonthly()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select><select id="productMonth" class="dash-filter" onchange="renderProductMonthly()"></select><button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button></div>
+      <div id="productsUpdated" class="dash-updated"></div><div id="productsContent" class="dash-loading">読み込み前です</div>
     </div>
   </section>
 
@@ -1142,6 +1134,7 @@
   window.registerEntries = registerEntries;
   window.undoLastBatch = undoLastBatch;
 
+
   /* ===== 確認画面 ===== */
   let dashboardData = null;
   let dashboardLoading = false;
@@ -1156,115 +1149,54 @@
 
   function loadDashboard(force){
     if(dashboardLoading) return;
-    if(!force && dashboardData && Date.now()-dashboardLoadedAt<60000){renderAllDashboard();return;}
-
-    dashboardLoading=true;
-    setDashboardLoading('最新データを読み込んでいます…');
+    if(!force && dashboardData && (Date.now()-dashboardLoadedAt<60000)){renderAllDashboard();return;}
+    dashboardLoading=true; setDashboardLoading('最新データを読み込んでいます…');
     const callbackName='__tomsDashboard_'+Date.now();
-    const script=document.createElement('script');
-    let finished=false;
-
-    const cleanup=()=>{
-      try{delete window[callbackName];}catch(e){window[callbackName]=undefined;}
-      if(script.parentNode) script.parentNode.removeChild(script);
-    };
-
-    const timer=setTimeout(()=>{
-      if(finished)return;
-      finished=true;dashboardLoading=false;cleanup();
-      setDashboardError('データを取得できませんでした。通信状態を確認してください。');
-    },15000);
-
-    window[callbackName]=data=>{
-      if(finished)return;
-      finished=true;clearTimeout(timer);dashboardLoading=false;cleanup();
-      if(!data || data.ok===false){setDashboardError((data&&data.message)||'データを取得できませんでした。');return;}
-      dashboardData=data;dashboardLoadedAt=Date.now();setupProductMonthOptions();renderAllDashboard();
-    };
-
-    script.onerror=()=>{
-      if(finished)return;
-      finished=true;clearTimeout(timer);dashboardLoading=false;cleanup();
-      setDashboardError('データを取得できませんでした。');
-    };
-
+    const script=document.createElement('script'); let finished=false;
+    const cleanup=()=>{try{delete window[callbackName]}catch(e){window[callbackName]=undefined} if(script.parentNode) script.parentNode.removeChild(script)};
+    const timer=setTimeout(()=>{if(finished)return;finished=true;dashboardLoading=false;cleanup();setDashboardError('データを取得できませんでした。通信状態を確認してください。')},15000);
+    window[callbackName]=data=>{if(finished)return;finished=true;clearTimeout(timer);dashboardLoading=false;cleanup();if(!data||data.ok===false){setDashboardError((data&&data.message)||'データを取得できませんでした。');return;}dashboardData=data;dashboardLoadedAt=Date.now();setupProductMonthOptions();renderAllDashboard();};
+    script.onerror=()=>{if(finished)return;finished=true;clearTimeout(timer);dashboardLoading=false;cleanup();setDashboardError('データを取得できませんでした。')};
     script.src=API_URL+'?mode=dashboard&callback='+encodeURIComponent(callbackName)+'&t='+Date.now();
     document.head.appendChild(script);
   }
 
-  function setDashboardLoading(message){
-    ['inventoryContent','monthlyContent','productsContent'].forEach(id=>{
-      const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-loading">'+escapeHtml(message)+'</div>';
-    });
-  }
-
-  function setDashboardError(message){
-    ['inventoryContent','monthlyContent','productsContent'].forEach(id=>{
-      const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-empty">'+escapeHtml(message)+'</div>';
-    });
-  }
-
-  function renderAllDashboard(){
-    if(!dashboardData)return;
-    renderInventory();renderMonthly();renderProductMonthly();
-    const text=dashboardData.lastUpdated?'データ最終登録：'+dashboardData.lastUpdated:'データを取得しました';
-    ['inventoryUpdated','monthlyUpdated','productsUpdated'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text;});
-  }
+  function setDashboardLoading(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-loading">'+escapeHtml(message)+'</div>'})}
+  function setDashboardError(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-empty">'+escapeHtml(message)+'</div>'})}
+  function renderAllDashboard(){if(!dashboardData)return;renderInventory();renderMonthly();renderProductMonthly();const text=dashboardData.lastUpdated?'データ最終登録：'+dashboardData.lastUpdated:'データを取得しました';['inventoryUpdated','monthlyUpdated','productsUpdated'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text})}
 
   function setupProductMonthOptions(){
     if(!dashboardData||!Array.isArray(dashboardData.months))return;
-    const select=document.getElementById('productMonth');
-    const old=select.value;
-    const today=localToday().slice(0,7);
+    const select=document.getElementById('productMonth');const old=select.value;const today=localToday().slice(0,7);
     select.innerHTML=dashboardData.months.map(m=>'<option value="'+escapeHtml(m.key)+'">'+escapeHtml(m.label)+'</option>').join('');
-    if(dashboardData.months.some(m=>m.key===old)) select.value=old;
-    else if(dashboardData.months.some(m=>m.key===today)) select.value=today;
-    else if(dashboardData.months.length) select.value=dashboardData.months[dashboardData.months.length-1].key;
+    if(dashboardData.months.some(m=>m.key===old))select.value=old;else if(dashboardData.months.some(m=>m.key===today))select.value=today;else if(dashboardData.months.length)select.value=dashboardData.months[dashboardData.months.length-1].key;
   }
 
   function renderInventory(){
-    const box=document.getElementById('inventoryContent');
-    if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
-    const store=document.getElementById('inventoryStore').value;
-    const rows=(dashboardData.inventory&&dashboardData.inventory[store])||[];
-    const totalDelivery=rows.reduce((s,r)=>s+Number(r.delivery||0),0);
-    const totalSales=rows.reduce((s,r)=>s+Number(r.sales||0),0);
-    const totalStock=rows.reduce((s,r)=>s+Number(r.stock||0),0);
-    const tableRows=rows.map(r=>'<tr><td>'+escapeHtml(r.product)+'</td><td>'+num(r.delivery)+'</td><td>'+num(r.sales)+'</td><td class="'+(Number(r.stock)<0?'stock-minus':'')+'">'+num(r.stock)+'</td></tr>').join('');
-    box.innerHTML='<div class="dash-cards"><div class="metric"><div class="metric-label">累計納品</div><div class="metric-value">'+num(totalDelivery)+'個</div></div><div class="metric"><div class="metric-label">累計販売</div><div class="metric-value">'+num(totalSales)+'個</div></div></div><div class="metric" style="margin-bottom:10px"><div class="metric-label">現在庫 合計</div><div class="metric-value '+(totalStock<0?'stock-minus':'')+'">'+num(totalStock)+'個</div></div><div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>商品名</th><th>納品</th><th>販売</th><th>在庫</th></tr></thead><tbody>'+(tableRows||'<tr><td colspan="4">データなし</td></tr>')+'</tbody></table></div>';
+    const box=document.getElementById('inventoryContent');if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
+    const store=document.getElementById('inventoryStore').value;const rows=(dashboardData.inventory&&dashboardData.inventory[store])||[];
+    const totalDelivery=rows.reduce((s,r)=>s+Number(r.delivery||0),0),totalSales=rows.reduce((s,r)=>s+Number(r.sales||0),0),totalStock=rows.reduce((s,r)=>s+Number(r.stock||0),0);
+    const trs=rows.map(r=>'<tr><td>'+escapeHtml(r.product)+'</td><td>'+num(r.delivery)+'</td><td>'+num(r.sales)+'</td><td class="'+(Number(r.stock)<0?'stock-minus':'')+'">'+num(r.stock)+'</td></tr>').join('');
+    box.innerHTML='<div class="dash-cards"><div class="metric"><div class="metric-label">累計納品</div><div class="metric-value">'+num(totalDelivery)+'個</div></div><div class="metric"><div class="metric-label">累計販売</div><div class="metric-value">'+num(totalSales)+'個</div></div></div><div class="metric" style="margin-bottom:10px"><div class="metric-label">現在庫 合計</div><div class="metric-value '+(totalStock<0?'stock-minus':'')+'">'+num(totalStock)+'個</div></div><div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>商品名</th><th>納品</th><th>販売</th><th>在庫</th></tr></thead><tbody>'+(trs||'<tr><td colspan="4">データなし</td></tr>')+'</tbody></table></div>';
   }
 
   function renderMonthly(){
-    const box=document.getElementById('monthlyContent');
-    if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
-    const store=document.getElementById('monthlyStore').value;
-    const rows=(dashboardData.monthly&&dashboardData.monthly[store])||[];
-    const totalQty=rows.reduce((s,r)=>s+Number(r.qty||0),0);
-    const totalAmount=rows.reduce((s,r)=>s+Number(r.amount||0),0);
+    const box=document.getElementById('monthlyContent');if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
+    const store=document.getElementById('monthlyStore').value;const rows=(dashboardData.monthly&&dashboardData.monthly[store])||[];
+    const totalQty=rows.reduce((s,r)=>s+Number(r.qty||0),0),totalAmount=rows.reduce((s,r)=>s+Number(r.amount||0),0);
     box.innerHTML='<div class="dash-cards"><div class="metric"><div class="metric-label">期間販売個数</div><div class="metric-value">'+num(totalQty)+'個</div></div><div class="metric"><div class="metric-label">期間売上</div><div class="metric-value">'+yen(totalAmount)+'</div></div></div><div class="month-list">'+rows.map(r=>'<div class="month-row"><div class="m">'+escapeHtml(r.label)+'</div><div class="v">'+num(r.qty)+'個</div><div class="v">'+yen(r.amount)+'</div></div>').join('')+'</div>';
   }
 
   function renderProductMonthly(){
-    const box=document.getElementById('productsContent');
-    if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
-    const store=document.getElementById('productStore').value;
-    const month=document.getElementById('productMonth').value;
-    const byStore=(dashboardData.productMonthly&&dashboardData.productMonthly[store])||{};
-    const rows=byStore[month]||[];
-    const soldRows=rows.filter(r=>Number(r.qty||0)>0);
-    const totalQty=soldRows.reduce((s,r)=>s+Number(r.qty||0),0);
+    const box=document.getElementById('productsContent');if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
+    const store=document.getElementById('productStore').value,month=document.getElementById('productMonth').value,byStore=(dashboardData.productMonthly&&dashboardData.productMonthly[store])||{},rows=byStore[month]||[],soldRows=rows.filter(r=>Number(r.qty||0)>0),totalQty=soldRows.reduce((s,r)=>s+Number(r.qty||0),0);
     if(!soldRows.length){box.innerHTML='<div class="metric" style="margin-bottom:10px"><div class="metric-label">販売個数</div><div class="metric-value">0個</div></div><div class="dash-empty">この月の販売実績はありません。</div>';return;}
     box.innerHTML='<div class="metric" style="margin-bottom:10px"><div class="metric-label">販売個数 合計</div><div class="metric-value">'+num(totalQty)+'個</div></div><div class="dash-table-wrap"><table class="dash-table" style="min-width:0"><thead><tr><th>商品名</th><th>販売個数</th></tr></thead><tbody>'+soldRows.map(r=>'<tr><td>'+escapeHtml(r.product)+'</td><td>'+num(r.qty)+'個</td></tr>').join('')+'</tbody></table></div>';
   }
 
-  function escapeHtml(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-  function num(value){return Number(value||0).toLocaleString('ja-JP');}
-
-  window.switchView=switchView;
-  window.loadDashboard=loadDashboard;
-  window.renderInventory=renderInventory;
-  window.renderMonthly=renderMonthly;
-  window.renderProductMonthly=renderProductMonthly;
+  function escapeHtml(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+  function num(value){return Number(value||0).toLocaleString('ja-JP')}
+  window.switchView=switchView;window.loadDashboard=loadDashboard;window.renderInventory=renderInventory;window.renderMonthly=renderMonthly;window.renderProductMonthly=renderProductMonthly;
 
 
   render();
