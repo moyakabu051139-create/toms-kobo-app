@@ -440,7 +440,43 @@
         width:42px;
       }
     }
-  </style>
+  
+    .products-placeholder{
+      padding:20px 8px;
+      text-align:center;
+      color:#7c6857;
+      font-weight:800;
+      line-height:1.6;
+    }
+
+    .product-columns{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      align-items:start;
+    }
+
+    .product-column{
+      display:grid;
+      gap:10px;
+      min-width:0;
+    }
+
+    .product-price{
+      margin-top:4px;
+      color:#80634c;
+      font-size:13px;
+      font-weight:800;
+    }
+
+    @media(max-width:360px){
+      .product-columns,
+      .product-column{
+        gap:7px;
+      }
+    }
+
+</style>
 </head>
 
 <body>
@@ -450,7 +486,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">iPhone入力用</div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります</div>
 
   <div class="card">
     <div class="label">日付</div>
@@ -535,7 +571,7 @@
 
   <div class="card">
     <div class="label">商品・数量</div>
-    <div id="productList" class="product-list"></div>
+    <div id="productArea"></div>
   </div>
 
   <div class="card">
@@ -576,8 +612,8 @@
   </div>
 
   <div class="note">
-    数量を入力した商品のみ登録します。<br>
-    店舗と区分は前回の選択を保持します。
+    店舗を選ぶと、その店舗で扱っている商品のみ表示されます。<br>
+    数量を入力した商品のみ登録します。
   </div>
 
   <div class="register">
@@ -603,713 +639,450 @@
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAABgFBMVEX+/v7///8XFxkqJCT858vZsodLNy8ODA+uWDT+9dbLe0siHiAhHB1wRjPYgk3VIik5MzIcHSDjuoxPR0WUVDbpISr1ho9NKCbm5uaoakWal5ZZVFJqWFNrZ2bHxsbsqa2JSzGxJirSrINuJyiLiYi4ckiRhni4trWzqJbUyLHY2Nh5c2+pp6gaISJUQzmRJiluY1mJem5kPS23mHZ6UTqVZUfk1b2QXUL7tbakmovGuaTs3cfkiFDEon2LaWyojG7MlJjnHij2mZpPP0FnS06xg4ZuXmCTXGGIclzc0rryfIj/u8GpenzRemvd3d3twZKBf4C8sZ3YHyjXeoHJio3BnnvbnqP5yLbu7u4QIR8nIB+/YDepfYDfgHPcpqre3+DigHYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByAIc3AAAAgHRSTlP+Af////////////////////////////////////////////////////////////////////////////////////////////////////8P////////////D///////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT5E94AAAmRSURBVHja7VmJctrKEvWbhhmDJBhZcoSQwJgdsxgwNnhPnP0mN3ff3v7/X/FOj0RyY3ASJ07VrXruKgeQRn2mu08vo2z87SvLxj3APcA9wF8L4Pc3b978fmuAv5TsVUtfU3tfk01e+Wvp75ASYiiEir6OFR1bUGN3dz8YKu+r+IcE7W6zNIaqcvf6S49ZfxHyIxBE884BIjHcN/pZAtce3LH+ihg2tn9cAhRJiDtFKGH/QfHRdmLC9vajXRL2HbK1o1n/9m6QBKHRKDKCqNwVW5uC/bO9Dxrx/nf/EIwEturqnegvK5f5E7jCGuJzOxCWoH2wlYTeuwP9Vagr8vZFQKKx/QgBxhc34GsqugOAZ+D/o+LQthrbDU6FBjuKLGBxPnS+3ADeNpg/hPIiSh12H7B3TFaQ+HITmgqKi0mIoRfiBgHcVYR+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"
   };
 
-  const STORES = [
-    "南城市地域物産館",
-    "南の駅やえせ"
-  ];
+  const STORE_PRODUCTS = {
+    "南城市地域物産館":[
+      {name:"美らサンドグラス",price:800},
+      {name:"美らサンドタンブラー黒",price:1800},
+      {name:"美らサンドタンブラー白",price:1800},
+      {name:"美らタンブラー2個",price:3500},
+      {name:"タンブラー白ハイビ柄",price:1800},
+      {name:"タンブラー黒ハイビ柄",price:1800},
+      {name:"タンブラー ハイビ柄2個",price:3500},
+      {name:"ランチボックス カーキー",price:1800},
+      {name:"ランチボックス オレンジ",price:1800},
+      {name:"コルクコースター 1個",price:180},
+      {name:"コルクコースター 2個セット",price:350},
+      {name:"魔除けのサン付y2k",price:550},
+      {name:"沖縄ストラップS",price:660},
+      {name:"沖縄ストラップM",price:800},
+      {name:"島ぞうり",price:2000},
+      {name:"ワンポイント島ぞうり",price:1200}
+    ],
 
-  const PRODUCTS = [
-    { name:"美らサンドグラス", price:800 },
-    { name:"美らタンブラー黒", price:1800 },
-    { name:"美らタンブラー白", price:1800 },
-    { name:"美らタンブラー2個", price:3500 },
-    { name:"タンブラー白ハイビ柄", price:1800 },
-    { name:"タンブラー黒ハイビ柄", price:1800 },
-    { name:"タンブラー　ハイビ柄2個", price:3500 },
-    { name:"ランチボックス　カーキー", price:1800 },
-    { name:"ランチボックス　オレンジ", price:1800 },
-    { name:"コルクコースター1個", price:180 },
-    { name:"コルクコースター1個2個セット", price:350 },
-    { name:"魔除けのサン付きy2k", price:550 }
-  ];
+    "南の駅やえせ":[
+      {name:"美らサンドタンブラー黒",price:1800},
+      {name:"美らサンドタンブラー白",price:1800},
+      {name:"美らタンブラー2個",price:3500},
+      {name:"タンブラー白ハイビ柄",price:1800},
+      {name:"タンブラー黒ハイビ柄",price:1800},
+      {name:"タンブラー ハイビ柄2個",price:3500},
+      {name:"コルクコースター 1個",price:180},
+      {name:"コルクコースター 2個セット",price:350},
+      {name:"シーちゃんコースターA",price:180},
+      {name:"シーちゃんコースターB",price:180},
+      {name:"シーちゃんコースターC",price:180},
+      {name:"シーちゃんマグ やえせシーちゃん",price:1500},
+      {name:"シーちゃんマグ 海と特産品",price:1500},
+      {name:"シーちゃんマグ めんそーれ",price:1500},
+      {name:"シーちゃん願い事チャーム",price:400},
+      {name:"魔除けのサン付ストラップ",price:550},
+      {name:"パラコード部活ストラップ",price:550}
+    ]
+  };
+
+  const STORES = Object.keys(STORE_PRODUCTS);
 
   let state = {
     store:localStorage.getItem("toms_store") || "",
     type:localStorage.getItem("toms_type") || "納品",
-    quantities:PRODUCTS.map(() => "")
+    quantities:{}
   };
 
-  function localToday() {
+  function localToday(){
     const d = new Date();
     const tz = d.getTimezoneOffset() * 60000;
-
-    return new Date(d - tz)
-      .toISOString()
-      .slice(0,10);
+    return new Date(d - tz).toISOString().slice(0,10);
   }
 
   document.getElementById("date").value = localToday();
 
-  const storeBox =
-    document.getElementById("storeButtons");
+  const storeBox = document.getElementById("storeButtons");
+  const productArea = document.getElementById("productArea");
+  const saleBtn = document.getElementById("saleBtn");
+  const deliveryBtn = document.getElementById("deliveryBtn");
+  const registerBtn = document.getElementById("registerBtn");
 
-  STORES.forEach(s => {
-    const b =
-      document.createElement("button");
-
+  STORES.forEach(store=>{
+    const b = document.createElement("button");
     b.type = "button";
     b.className = "choice store-choice";
-    b.dataset.store = s;
-
-    b.innerHTML = `
-      <img src="${STORE_IMAGES[s]}" alt="">
-      <span class="store-name">${s}</span>
-    `;
-
-    b.addEventListener(
-      "click",
-      () => setStore(s)
-    );
-
+    b.dataset.store = store;
+    b.innerHTML = `<img src="${STORE_IMAGES[store]}" alt=""><span class="store-name">${store}</span>`;
+    b.addEventListener("click",()=>setStore(store));
     storeBox.appendChild(b);
   });
 
-  const productList =
-    document.getElementById("productList");
+  saleBtn.onclick = ()=>setType("販売");
+  deliveryBtn.onclick = ()=>setType("納品");
 
-  PRODUCTS.forEach((p,index) => {
-    const row =
-      document.createElement("div");
+  function currentProducts(){
+    return state.store ? (STORE_PRODUCTS[state.store] || []) : [];
+  }
 
-    row.className = "product-row";
-    row.dataset.index = index;
+  function qtyKey(productName){
+    return state.store + "||" + productName;
+  }
 
-    const name =
-      document.createElement("div");
+  function getQty(productName){
+    return state.quantities[qtyKey(productName)] || "";
+  }
 
-    name.className = "product-name";
-    name.textContent = p.name;
+  function setQty(productName,value){
+    const key = qtyKey(productName);
+    if(value === ""){
+      delete state.quantities[key];
+    }else{
+      state.quantities[key] = value;
+    }
+  }
 
-    const control =
-      document.createElement("div");
+  function setStore(store){
+    if(state.store !== store){
+      state.quantities = {};
+    }
+    state.store = store;
+    localStorage.setItem("toms_store",store);
+    render();
+  }
 
-    control.className = "qty-control";
+  function setType(type){
+    state.type = type;
+    localStorage.setItem("toms_type",type);
+    render();
+  }
 
-    const input =
-      document.createElement("input");
+  function selectedItems(){
+    return currentProducts()
+      .map(product=>({
+        product,
+        qty:Number(getQty(product.name))
+      }))
+      .filter(x=>Number.isFinite(x.qty) && x.qty >= 1);
+  }
 
-    input.type = "number";
-    input.inputMode = "numeric";
-    input.min = "1";
-    input.max = "10";
-    input.step = "1";
-    input.placeholder = "数量";
-    input.className = "qty-input";
+  function yen(n){
+    return Number(n).toLocaleString("ja-JP") + "円";
+  }
 
-    input.addEventListener(
-      "input",
-      () => setQtyFromInput(
-        index,
-        input.value
-      )
-    );
-
-    input.addEventListener(
-      "blur",
-      () => normalizeQty(index)
-    );
-
-    const select =
-      document.createElement("select");
-
-    select.className = "qty-select";
-
-    const blank =
-      document.createElement("option");
-
-    blank.value = "";
-    blank.textContent = "▼";
-
-    select.appendChild(blank);
-
-    for(let n=1; n<=10; n++) {
-      const o =
-        document.createElement("option");
-
-      o.value = n;
-      o.textContent = n;
-
-      select.appendChild(o);
+  function renderProducts(){
+    if(!state.store){
+      productArea.innerHTML = `
+        <div class="products-placeholder">
+          先に店舗を選択してください。<br>
+          店舗ごとの商品一覧がここに表示されます。
+        </div>
+      `;
+      return;
     }
 
-    select.addEventListener(
-      "change",
-      () => {
-        if(select.value !== "") {
-          state.quantities[index] =
-            Number(select.value);
+    const products = currentProducts();
+    const split = Math.ceil(products.length / 2);
+    const left = products.slice(0,split);
+    const right = products.slice(split);
 
-          input.value =
-            select.value;
+    productArea.innerHTML = `
+      <div class="product-columns">
+        <div class="product-column" id="productColLeft"></div>
+        <div class="product-column" id="productColRight"></div>
+      </div>
+    `;
 
-          render();
+    renderProductColumn(document.getElementById("productColLeft"),left);
+    renderProductColumn(document.getElementById("productColRight"),right);
+  }
+
+  function renderProductColumn(container,products){
+    products.forEach(product=>{
+      const row = document.createElement("div");
+      const qty = Number(getQty(product.name));
+
+      row.className = "product-row" +
+        (Number.isFinite(qty) && qty >= 1 ? " has-qty" : "");
+      row.dataset.product = product.name;
+
+      const nameWrap = document.createElement("div");
+      nameWrap.innerHTML = `
+        <div class="product-name">${product.name}</div>
+        <div class="product-price">@${product.price.toLocaleString("ja-JP")}</div>
+      `;
+
+      const control = document.createElement("div");
+      control.className = "qty-control";
+
+      const input = document.createElement("input");
+      input.type = "number";
+      input.inputMode = "numeric";
+      input.min = "1";
+      input.max = "99";
+      input.step = "1";
+      input.placeholder = "数量";
+      input.className = "qty-input";
+      input.value = getQty(product.name);
+
+      input.addEventListener("input",()=>{
+        if(input.value === ""){
+          setQty(product.name,"");
+        }else{
+          const n = Number(input.value);
+          if(Number.isFinite(n)) setQty(product.name,n);
         }
+        renderSummaryOnly();
+        updateProductHighlights();
+      });
 
+      input.addEventListener("blur",()=>{
+        if(input.value === ""){
+          setQty(product.name,"");
+        }else{
+          let v = Math.round(Number(input.value));
+          if(!Number.isFinite(v)) v = 1;
+          v = Math.min(99,Math.max(1,v));
+          input.value = v;
+          setQty(product.name,v);
+        }
+        renderSummaryOnly();
+        updateProductHighlights();
+      });
+
+      const select = document.createElement("select");
+      select.className = "qty-select";
+
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = "▼";
+      select.appendChild(blank);
+
+      for(let n=1;n<=10;n++){
+        const o = document.createElement("option");
+        o.value = n;
+        o.textContent = n;
+        select.appendChild(o);
+      }
+
+      select.addEventListener("change",()=>{
+        if(select.value !== ""){
+          const v = Number(select.value);
+          input.value = v;
+          setQty(product.name,v);
+          renderSummaryOnly();
+          updateProductHighlights();
+        }
         select.value = "";
-      }
-    );
+      });
 
-    control.appendChild(input);
-    control.appendChild(select);
-
-    row.appendChild(name);
-    row.appendChild(control);
-
-    productList.appendChild(row);
-  });
-
-  function setQtyFromInput(index,value) {
-    if(value === "") {
-      state.quantities[index] = "";
-      render();
-      return;
-    }
-
-    const n = Number(value);
-
-    if(Number.isFinite(n)) {
-      state.quantities[index] = n;
-    }
-
-    render();
-  }
-
-  function normalizeQty(index) {
-    const input =
-      document.querySelectorAll(".qty-input")[index];
-
-    if(input.value === "") {
-      state.quantities[index] = "";
-      render();
-      return;
-    }
-
-    let v =
-      Number(input.value);
-
-    if(!Number.isFinite(v)) {
-      v = 1;
-    }
-
-    v =
-      Math.round(v);
-
-    v =
-      Math.min(
-        10,
-        Math.max(
-          1,
-          v
-        )
-      );
-
-    state.quantities[index] = v;
-    input.value = v;
-
-    render();
-  }
-
-  function setStore(s) {
-    state.store = s;
-
-    localStorage.setItem(
-      "toms_store",
-      s
-    );
-
-    render();
-  }
-
-  function setType(t) {
-    state.type = t;
-
-    localStorage.setItem(
-      "toms_type",
-      t
-    );
-
-    render();
-  }
-
-  function selectedItems() {
-    const items = [];
-
-    PRODUCTS.forEach((p,index) => {
-      const q =
-        Number(
-          state.quantities[index]
-        );
-
-      if(
-        Number.isFinite(q)
-        &&
-        q >= 1
-      ) {
-        items.push({
-          index:index,
-          product:p,
-          qty:q
-        });
-      }
+      control.appendChild(input);
+      control.appendChild(select);
+      row.appendChild(nameWrap);
+      row.appendChild(control);
+      container.appendChild(row);
     });
-
-    return items;
   }
 
-  function yen(n) {
-    return Number(n)
-      .toLocaleString("ja-JP")
-      + "円";
+  function updateProductHighlights(){
+    document.querySelectorAll(".product-row").forEach(row=>{
+      const q = Number(getQty(row.dataset.product));
+      row.classList.toggle("has-qty",Number.isFinite(q) && q >= 1);
+    });
   }
 
-  function render() {
-    [...storeBox.children]
-      .forEach(
-        b =>
-          b.classList.toggle(
-            "active",
-            b.dataset.store === state.store
-          )
-      );
+  function renderSummaryOnly(){
+    const items = selectedItems();
+    const totalQty = items.reduce((sum,x)=>sum+x.qty,0);
+    const totalAmount = items.reduce((sum,x)=>sum+x.product.price*x.qty,0);
 
-    document
-      .getElementById("saleBtn")
-      .classList.toggle(
-        "active",
-        state.type === "販売"
-      );
+    document.getElementById("sumStore").textContent = state.store || "未選択";
+    document.getElementById("sumType").textContent = state.type;
+    document.getElementById("sumCount").textContent = items.length + "商品";
+    document.getElementById("sumQty").textContent = totalQty + "個";
+    document.getElementById("sumAmount").textContent =
+      state.type === "販売" ? yen(totalAmount) : "－";
 
-    document
-      .getElementById("deliveryBtn")
-      .classList.toggle(
-        "active",
-        state.type === "納品"
-      );
-
-    const items =
-      selectedItems();
-
-    const totalQty =
-      items.reduce(
-        (sum,x) =>
-          sum + x.qty,
-        0
-      );
-
-    const totalAmount =
-      items.reduce(
-        (sum,x) =>
-          sum
-          +
-          x.product.price
-          *
-          x.qty,
-        0
-      );
-
-    document
-      .querySelectorAll(".product-row")
-      .forEach(
-        (row,index) => {
-          const q =
-            Number(
-              state.quantities[index]
-            );
-
-          row.classList.toggle(
-            "has-qty",
-            Number.isFinite(q)
-            &&
-            q >= 1
-          );
-        }
-      );
-
-    document
-      .getElementById("sumStore")
-      .textContent =
-        state.store || "未選択";
-
-    document
-      .getElementById("sumType")
-      .textContent =
-        state.type;
-
-    document
-      .getElementById("sumCount")
-      .textContent =
-        items.length + "商品";
-
-    document
-      .getElementById("sumQty")
-      .textContent =
-        totalQty + "個";
-
-    document
-      .getElementById("sumAmount")
-      .textContent =
-        state.type === "販売"
-        ?
-        yen(totalAmount)
-        :
-        "－";
-
-    const box =
-      document.getElementById(
-        "selectedProducts"
-      );
-
-    box.innerHTML =
+    document.getElementById("selectedProducts").innerHTML =
       items.length
-      ?
-      items.map(
-        x => `
+      ? items.map(x=>`
           <div class="selected-line">
             <span>${x.product.name}</span>
             <b>${x.qty}個</b>
           </div>
-        `
-      ).join("")
-      :
-      '<div class="note">数量を入力した商品がここに表示されます。</div>';
+        `).join("")
+      : '<div class="note">数量を入力した商品がここに表示されます。</div>';
 
-    document
-      .getElementById("registerBtn")
-      .disabled =
-        !state.store
-        ||
-        items.length === 0;
+    registerBtn.disabled = !state.store || items.length === 0;
+  }
 
+  function render(){
+    [...storeBox.children].forEach(b=>{
+      b.classList.toggle("active",b.dataset.store === state.store);
+    });
+
+    saleBtn.classList.toggle("active",state.type === "販売");
+    deliveryBtn.classList.toggle("active",state.type === "納品");
+
+    renderProducts();
+    renderSummaryOnly();
     drawHistory();
   }
 
-  function localHistory() {
-    try {
-      return JSON.parse(
-        localStorage.getItem(
-          "toms_batches"
-        )
-        ||
-        "[]"
-      );
-    }
-    catch(e) {
+  function localHistory(){
+    try{
+      return JSON.parse(localStorage.getItem("toms_batches") || "[]");
+    }catch(e){
       return [];
     }
   }
 
-  function saveHistory(a) {
-    localStorage.setItem(
-      "toms_batches",
-      JSON.stringify(a)
-    );
+  function saveHistory(a){
+    localStorage.setItem("toms_batches",JSON.stringify(a));
   }
 
-  async function postToAppsScript(params) {
-    const body =
-      new URLSearchParams(params);
-
-    /*
-      GitHub Pages → Apps Script は別ドメインなので
-      no-cors で送信します。
-      Apps Script側には正常にPOSTされます。
-    */
-    await fetch(
-      API_URL,
-      {
-        method:"POST",
-        mode:"no-cors",
-        body:body
-      }
-    );
+  async function postToAppsScript(params){
+    const body = new URLSearchParams(params);
+    await fetch(API_URL,{
+      method:"POST",
+      mode:"no-cors",
+      body
+    });
   }
 
-  async function registerEntries() {
-    const items =
-      selectedItems();
+  async function registerEntries(){
+    const items = selectedItems();
 
-    if(!state.store) {
-      alert(
-        "店舗を選択してください"
-      );
+    if(!state.store){
+      alert("店舗を選択してください");
       return;
     }
 
-    if(items.length === 0) {
-      alert(
-        "数量を入力してください"
-      );
+    if(items.length === 0){
+      alert("数量を入力してください");
       return;
     }
 
-    const batchId =
-      String(
-        Date.now()
-      );
+    const batchId = String(Date.now());
+    const date = document.getElementById("date").value;
 
-    const date =
-      document
-        .getElementById("date")
-        .value;
-
-    const entries =
-      items.map(
-        (x,index) => {
-          const price =
-            x.product.price;
-
-          return {
-            id:
-              batchId
-              +
-              "-"
-              +
-              index,
-
-            batchId:
-              batchId,
-
-            date:
-              date,
-
-            store:
-              state.store,
-
-            type:
-              state.type,
-
-            product:
-              x.product.name,
-
-            qty:
-              x.qty,
-
-            unitPrice:
-              state.type === "販売"
-              ?
-              price
-              :
-              "",
-
-            amount:
-              state.type === "販売"
-              ?
-              price * x.qty
-              :
-              ""
-          };
-        }
-      );
+    const entries = items.map((x,index)=>({
+      id:batchId + "-" + index,
+      batchId,
+      date,
+      store:state.store,
+      type:state.type,
+      product:x.product.name,
+      qty:x.qty,
+      unitPrice:state.type === "販売" ? x.product.price : "",
+      amount:state.type === "販売" ? x.product.price * x.qty : ""
+    }));
 
     setLoading(true);
 
-    try {
+    try{
       await postToAppsScript({
         action:"submit",
         entries:JSON.stringify(entries)
       });
 
-      const history =
-        localHistory();
+      const history = localHistory();
 
       history.push({
-        batchId:batchId,
-        date:date,
+        batchId,
+        date,
         store:state.store,
         type:state.type,
-        items:
-          entries.map(
-            x => ({
-              product:x.product,
-              qty:x.qty
-            })
-          )
+        items:entries.map(x=>({product:x.product,qty:x.qty}))
       });
 
       saveHistory(history);
-
-      clearQuantities();
-
+      state.quantities = {};
       setLoading(false);
-
-      showToast(
-        "登録しました"
-      );
-
+      showToast("登録しました");
       render();
-    }
-    catch(err) {
+    }catch(err){
       setLoading(false);
-
-      alert(
-        "登録できませんでした。通信状態を確認してください。"
-      );
+      alert("登録できませんでした。通信状態を確認してください。");
     }
   }
 
-  function clearQuantities() {
-    state.quantities =
-      PRODUCTS.map(
-        () => ""
-      );
-
-    document
-      .querySelectorAll(".qty-input")
-      .forEach(
-        input => {
-          input.value = "";
-        }
-      );
+  function clearQuantities(){
+    state.quantities = {};
+    render();
   }
 
-  async function undoLastBatch() {
-    const history =
-      localHistory();
+  async function undoLastBatch(){
+    const history = localHistory();
 
-    if(history.length === 0) {
-      showToast(
-        "取消す登録がありません"
-      );
+    if(history.length === 0){
+      showToast("取消す登録がありません");
       return;
     }
 
-    const batch =
-      history[
-        history.length - 1
-      ];
+    const batch = history[history.length - 1];
+    const text = batch.items.map(x=>x.product+" × "+x.qty).join("
+");
 
-    const text =
-      batch.items
-        .map(
-          x =>
-            x.product
-            +
-            " × "
-            +
-            x.qty
-        )
-        .join("\n");
+    if(!confirm("直前の登録を取消しますか？
 
-    if(
-      !confirm(
-        "直前の登録を取消しますか？"
-        +
-        "\n\n"
-        +
-        text
-      )
-    ) {
+"+text)){
       return;
     }
 
     setLoading(true);
 
-    try {
+    try{
       await postToAppsScript({
         action:"undo",
         batchId:batch.batchId
       });
 
       history.pop();
-
       saveHistory(history);
-
       setLoading(false);
-
-      showToast(
-        "取消しました"
-      );
-
+      showToast("取消しました");
       render();
-    }
-    catch(err) {
+    }catch(err){
       setLoading(false);
-
-      alert(
-        "取消できませんでした。通信状態を確認してください。"
-      );
+      alert("取消できませんでした。通信状態を確認してください。");
     }
   }
 
-  function drawHistory() {
-    const box =
-      document.getElementById(
-        "history"
-      );
+  function drawHistory(){
+    const box = document.getElementById("history");
+    const history = localHistory().slice(-5).reverse();
 
-    const history =
-      localHistory()
-        .slice(-5)
-        .reverse();
-
-    if(history.length === 0) {
+    if(history.length === 0){
       box.innerHTML =
         '<div class="note" style="padding:12px 0">まだ登録はありません。</div>';
-
       return;
     }
 
-    box.innerHTML =
-      history
-        .map(
-          batch => {
-            const total =
-              batch.items.reduce(
-                (sum,x) =>
-                  sum + x.qty,
-                0
-              );
+    box.innerHTML = history.map(batch=>{
+      const total = batch.items.reduce((sum,x)=>sum+x.qty,0);
 
-            return `
-              <div class="history-row">
-                <div>
-                  <b>${batch.type}</b>
-                  ${batch.items.length}商品
-                  <br>
-                  <span style="color:#735e4d">
-                    ${batch.date}・${batch.store}
-                  </span>
-                </div>
-
-                <div style="font-weight:900">
-                  ${total}個
-                </div>
-              </div>
-            `;
-          }
-        )
-        .join("");
+      return `
+        <div class="history-row">
+          <div>
+            <b>${batch.type}</b> ${batch.items.length}商品
+            <br>
+            <span style="color:#735e4d">${batch.date}・${batch.store}</span>
+          </div>
+          <div style="font-weight:900">${total}個</div>
+        </div>
+      `;
+    }).join("");
   }
 
-  function showToast(msg) {
-    const t =
-      document.getElementById(
-        "toast"
-      );
-
-    t.textContent =
-      msg;
-
-    t.style.display =
-      "block";
-
-    setTimeout(
-      () => {
-        t.style.display =
-          "none";
-      },
-      1700
-    );
+  function showToast(msg){
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    setTimeout(()=>t.style.display="none",1700);
   }
 
-  function setLoading(v) {
-    document
-      .getElementById("app")
-      .classList.toggle(
-        "loading",
-        v
-      );
+  function setLoading(v){
+    document.getElementById("app").classList.toggle("loading",v);
   }
+
+  window.setType = setType;
+  window.registerEntries = registerEntries;
+  window.undoLastBatch = undoLastBatch;
 
   render();
 </script>
