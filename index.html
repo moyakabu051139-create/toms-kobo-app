@@ -566,6 +566,40 @@
       }
     }
 
+
+    /* 在庫ページ：商品名＋現在庫だけ */
+    .inventory-only-stock th:first-child,
+    .inventory-only-stock td:first-child{
+      width:78% !important;
+      text-align:left !important;
+      font-size:13px !important;
+      padding:10px 8px !important;
+    }
+
+    .inventory-only-stock th:nth-child(2),
+    .inventory-only-stock td:nth-child(2){
+      width:22% !important;
+      text-align:center !important;
+      font-size:14px !important;
+      font-weight:900;
+      padding:10px 4px !important;
+      white-space:nowrap;
+    }
+
+    @media(max-width:390px){
+      .inventory-only-stock th:first-child,
+      .inventory-only-stock td:first-child{
+        width:76% !important;
+        font-size:12px !important;
+      }
+
+      .inventory-only-stock th:nth-child(2),
+      .inventory-only-stock td:nth-child(2){
+        width:24% !important;
+        font-size:13px !important;
+      }
+    }
+
 </style>
 </head>
 
@@ -1112,9 +1146,17 @@
 
       saveHistory(history);
       state.quantities = {};
+
+      // 新しい登録後は確認画面のキャッシュを無効化
+      dashboardData = null;
+      dashboardLoadedAt = 0;
+
       setLoading(false);
       showToast("登録しました");
       render();
+
+      // 書き込み完了後に最新データを先読み
+      setTimeout(()=>loadDashboard(true),1200);
     }catch(err){
       setLoading(false);
       alert("登録できませんでした。通信状態を確認してください。");
@@ -1230,7 +1272,7 @@
 
   function setDashboardLoading(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-loading">'+escapeHtml(message)+'</div>'})}
   function setDashboardError(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-empty">'+escapeHtml(message)+'</div>'})}
-  function renderAllDashboard(){if(!dashboardData)return;renderInventory();renderMonthly();renderProductMonthly();const text=dashboardData.lastUpdated?'データ最終登録：'+dashboardData.lastUpdated:'データを取得しました';['inventoryUpdated','monthlyUpdated','productsUpdated'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text})}
+  function renderAllDashboard(){if(!dashboardData)return;renderInventory();renderMonthly();renderProductMonthly();const text=dashboardData.lastUpdated?'最終登録：'+dashboardData.lastUpdated:'データを取得しました';['inventoryUpdated','monthlyUpdated','productsUpdated'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text})}
 
   function setupProductMonthOptions(){
     if(!dashboardData||!Array.isArray(dashboardData.months))return;
@@ -1240,18 +1282,53 @@
   }
 
   function renderInventory(){
-    const box=document.getElementById('inventoryContent');if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
-    const store=document.getElementById('inventoryStore').value;const rows=(dashboardData.inventory&&dashboardData.inventory[store])||[];
-    const totalDelivery=rows.reduce((s,r)=>s+Number(r.delivery||0),0),totalSales=rows.reduce((s,r)=>s+Number(r.sales||0),0),totalStock=rows.reduce((s,r)=>s+Number(r.stock||0),0);
-    const trs=rows.map(r=>'<tr><td>'+escapeHtml(r.product)+'</td><td>'+num(r.delivery)+'</td><td>'+num(r.sales)+'</td><td class="'+(Number(r.stock)<0?'stock-minus':'')+'">'+num(r.stock)+'</td></tr>').join('');
-    box.innerHTML='<div class="dash-cards"><div class="metric"><div class="metric-label">累計納品</div><div class="metric-value">'+num(totalDelivery)+'個</div></div><div class="metric"><div class="metric-label">累計販売</div><div class="metric-value">'+num(totalSales)+'個</div></div></div><div class="metric" style="margin-bottom:10px"><div class="metric-label">現在庫 合計</div><div class="metric-value '+(totalStock<0?'stock-minus':'')+'">'+num(totalStock)+'個</div></div><div class="dash-table-wrap inventory-wrap"><table class="dash-table inventory-table"><thead><tr><th>商品名</th><th>納品</th><th>販売</th><th>在庫</th></tr></thead><tbody>'+(trs||'<tr><td colspan="4">データなし</td></tr>')+'</tbody></table></div>';
+    const box = document.getElementById("inventoryContent");
+    if(!dashboardData){
+      box.innerHTML = '<div class="dash-loading">読み込み中…</div>';
+      return;
+    }
+
+    const store = document.getElementById("inventoryStore").value;
+    const rows = (dashboardData.inventory && dashboardData.inventory[store]) || [];
+
+    const tableRows = rows.map(r=>`
+      <tr>
+        <td>${escapeHtml(r.product)}</td>
+        <td class="${Number(r.stock)<0?'stock-minus':''}">${num(r.stock)}個</td>
+      </tr>
+    `).join("");
+
+    box.innerHTML = `
+      <div class="dash-table-wrap inventory-wrap">
+        <table class="dash-table inventory-table inventory-only-stock">
+          <thead><tr><th>商品名</th><th>在庫</th></tr></thead>
+          <tbody>${tableRows || '<tr><td colspan="2">データなし</td></tr>'}</tbody>
+        </table>
+      </div>
+    `;
   }
 
   function renderMonthly(){
-    const box=document.getElementById('monthlyContent');if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
-    const store=document.getElementById('monthlyStore').value;const rows=(dashboardData.monthly&&dashboardData.monthly[store])||[];
-    const totalQty=rows.reduce((s,r)=>s+Number(r.qty||0),0),totalAmount=rows.reduce((s,r)=>s+Number(r.amount||0),0);
-    box.innerHTML='<div class="dash-cards"><div class="metric"><div class="metric-label">期間販売個数</div><div class="metric-value">'+num(totalQty)+'個</div></div><div class="metric"><div class="metric-label">期間売上</div><div class="metric-value">'+yen(totalAmount)+'</div></div></div><div class="month-list">'+rows.map(r=>'<div class="month-row"><div class="m">'+escapeHtml(r.label)+'</div><div class="v">'+num(r.qty)+'個</div><div class="v">'+yen(r.amount)+'</div></div>').join('')+'</div>';
+    const box = document.getElementById("monthlyContent");
+    if(!dashboardData){
+      box.innerHTML = '<div class="dash-loading">読み込み中…</div>';
+      return;
+    }
+
+    const store = document.getElementById("monthlyStore").value;
+    const rows = (dashboardData.monthly && dashboardData.monthly[store]) || [];
+
+    box.innerHTML = `
+      <div class="month-list">
+        ${rows.map(r=>`
+          <div class="month-row">
+            <div class="m">${escapeHtml(r.label)}</div>
+            <div class="v">${num(r.qty)}個</div>
+            <div class="v">${yen(r.amount)}</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
   }
 
   function renderProductMonthly(){
