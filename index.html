@@ -1015,12 +1015,9 @@
     }
 
     const batch = history[history.length - 1];
-    const text = batch.items.map(x=>x.product+" × "+x.qty).join("
-");
+    const text = batch.items.map(x=>x.product+" × "+x.qty).join("\n");
 
-    if(!confirm("直前の登録を取消しますか？
-
-"+text)){
+    if(!confirm("直前の登録を取消しますか？\n\n"+text)){
       return;
     }
 
