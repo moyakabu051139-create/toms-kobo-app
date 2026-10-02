@@ -1380,10 +1380,96 @@
   }
 
   function renderProductMonthly(){
-    const box=document.getElementById('productsContent');if(!dashboardData){box.innerHTML='<div class="dash-loading">読み込み中…</div>';return;}
-    const store=document.getElementById('productStore').value,month=document.getElementById('productMonth').value,byStore=(dashboardData.productMonthly&&dashboardData.productMonthly[store])||{},rows=byStore[month]||[],soldRows=rows.filter(r=>Number(r.qty||0)>0),totalQty=soldRows.reduce((s,r)=>s+Number(r.qty||0),0);
-    if(!soldRows.length){box.innerHTML='<div class="metric" style="margin-bottom:10px"><div class="metric-label">販売個数</div><div class="metric-value">0個</div></div><div class="dash-empty">この月の販売実績はありません。</div>';return;}
-    box.innerHTML='<div class="metric" style="margin-bottom:10px"><div class="metric-label">販売個数 合計</div><div class="metric-value">'+num(totalQty)+'個</div></div><div class="dash-table-wrap"><table class="dash-table" style="min-width:0"><thead><tr><th>商品名</th><th>販売個数</th></tr></thead><tbody>'+soldRows.map(r=>'<tr><td>'+escapeHtml(r.product)+'</td><td>'+num(r.qty)+'個</td></tr>').join('')+'</tbody></table></div>';
+    const box=document.getElementById('productsContent');
+    if(!dashboardData){
+      box.innerHTML='<div class="dash-loading">読み込み中…</div>';
+      return;
+    }
+
+    const store=document.getElementById('productStore').value;
+    const month=document.getElementById('productMonth').value;
+    const byStore=(dashboardData.productMonthly&&dashboardData.productMonthly[store])||{};
+    const rows=byStore[month]||[];
+    const soldRows=rows.filter(r=>Number(r.qty||0)>0);
+
+    function getUnitPrice(productName){
+      if(store!=='全店舗'){
+        const list=STORE_PRODUCTS[store]||[];
+        const hit=list.find(p=>p.name===productName);
+        return hit ? Number(hit.price||0) : 0;
+      }
+
+      for(const storeName of Object.keys(STORE_PRODUCTS)){
+        const hit=(STORE_PRODUCTS[storeName]||[]).find(p=>p.name===productName);
+        if(hit) return Number(hit.price||0);
+      }
+
+      return 0;
+    }
+
+    const detailRows=soldRows.map(r=>{
+      const qty=Number(r.qty||0);
+      const unitPrice=getUnitPrice(r.product);
+      const amount=qty*unitPrice;
+      return {
+        product:r.product,
+        qty,
+        unitPrice,
+        amount
+      };
+    });
+
+    const totalQty=detailRows.reduce((s,r)=>s+r.qty,0);
+    const totalAmount=detailRows.reduce((s,r)=>s+r.amount,0);
+
+    if(!detailRows.length){
+      box.innerHTML=
+        '<div class="metric" style="margin-bottom:10px">'+
+          '<div class="metric-label">販売個数 合計</div>'+
+          '<div class="metric-value">0個</div>'+
+        '</div>'+
+        '<div class="metric" style="margin-bottom:10px">'+
+          '<div class="metric-label">売上金額 合計</div>'+
+          '<div class="metric-value">0円</div>'+
+        '</div>'+
+        '<div class="dash-empty">この月の販売実績はありません。</div>';
+      return;
+    }
+
+    box.innerHTML=
+      '<div class="metric" style="margin-bottom:10px">'+
+        '<div class="metric-label">販売個数 合計</div>'+
+        '<div class="metric-value">'+num(totalQty)+'個</div>'+
+      '</div>'+
+      '<div class="metric" style="margin-bottom:10px">'+
+        '<div class="metric-label">売上金額 合計</div>'+
+        '<div class="metric-value">'+num(totalAmount)+'円</div>'+
+      '</div>'+
+      '<div class="dash-table-wrap">'+
+        '<table class="dash-table" style="min-width:0">'+
+          '<thead>'+
+            '<tr>'+
+              '<th>商品名</th>'+
+              '<th>販売個数</th>'+
+              '<th>売上金額</th>'+
+            '</tr>'+
+          '</thead>'+
+          '<tbody>'+
+            detailRows.map(r=>
+              '<tr>'+
+                '<td>'+escapeHtml(r.product)+'</td>'+
+                '<td>'+num(r.qty)+'個</td>'+
+                '<td>'+num(r.amount)+'円</td>'+
+              '</tr>'
+            ).join('')+
+            '<tr>'+
+              '<td><b>合計</b></td>'+
+              '<td><b>'+num(totalQty)+'個</b></td>'+
+              '<td><b>'+num(totalAmount)+'円</b></td>'+
+            '</tr>'+
+          '</tbody>'+
+        '</table>'+
+      '</div>';
   }
 
   function escapeHtml(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
