@@ -911,7 +911,7 @@
         product,
         qty:Number(getQty(product.name))
       }))
-      .filter(x=>Number.isFinite(x.qty) && x.qty >= 1);
+      .filter(x=>Number.isFinite(x.qty) && (x.qty === -1 || x.qty >= 1));
   }
 
   function yen(n){
@@ -951,7 +951,7 @@
       const qty = Number(getQty(product.name));
 
       row.className = "product-row" +
-        (Number.isFinite(qty) && qty >= 1 ? " has-qty" : "");
+        (Number.isFinite(qty) && (qty === -1 || qty >= 1) ? " has-qty" : "");
       row.dataset.product = product.name;
 
       const nameWrap = document.createElement("div");
@@ -966,7 +966,7 @@
       const input = document.createElement("input");
       input.type = "number";
       input.inputMode = "numeric";
-      input.min = "1";
+      input.min = "-1";
       input.max = "99";
       input.step = "1";
       input.placeholder = "数量";
@@ -1006,6 +1006,11 @@
       blank.textContent = "▼";
       select.appendChild(blank);
 
+      const minusOne = document.createElement("option");
+      minusOne.value = "-1";
+      minusOne.textContent = "-1";
+      select.appendChild(minusOne);
+
       for(let n=1;n<=30;n++){
         const o = document.createElement("option");
         o.value = n;
@@ -1035,7 +1040,7 @@
   function updateProductHighlights(){
     document.querySelectorAll(".product-row").forEach(row=>{
       const q = Number(getQty(row.dataset.product));
-      row.classList.toggle("has-qty",Number.isFinite(q) && q >= 1);
+      row.classList.toggle("has-qty",Number.isFinite(q) && (q === -1 || q >= 1));
     });
   }
 
