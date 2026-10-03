@@ -6,13 +6,11 @@
 
   <title>Tom's工房 売上・納品入力</title>
 
-  <!-- iPhoneホーム画面用 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Tom's工房">
   <meta name="theme-color" content="#745038">
 
-  <!-- GitHubに後で icon-180.png を置きます -->
   <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
   <link rel="icon" type="image/png" href="./icon-180.png">
 
@@ -205,14 +203,6 @@
       color:#315c5f;
     }
 
-    .product-list {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      grid-template-rows:repeat(6,auto);
-      grid-auto-flow:column;
-      gap:10px;
-    }
-
     .product-row {
       min-width:0;
       min-height:134px;
@@ -222,25 +212,12 @@
       justify-content:space-between;
       border:1px solid #c8a47c;
       border-radius:13px;
-      background:
-        repeating-linear-gradient(
-          92deg,
-          rgba(110,75,47,.025) 0,
-          rgba(110,75,47,.025) 2px,
-          transparent 2px,
-          transparent 12px
-        ),
-        linear-gradient(145deg,#fffaf1,#efdabc);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.7),
-        0 2px 5px rgba(75,48,32,.08);
-      transition:border-color .15s,background .15s;
+      background:linear-gradient(145deg,#fffaf1,#efdabc);
     }
 
     .product-row.has-qty {
       border-color:#8a6547;
       background:linear-gradient(145deg,#fff6e9,#e7cba5);
-      box-shadow:0 0 0 2px rgba(116,80,56,.09);
     }
 
     .product-name {
@@ -273,18 +250,6 @@
       text-align:center;
       font-size:21px;
       font-weight:900;
-      -moz-appearance:textfield;
-    }
-
-    .qty-input::-webkit-inner-spin-button,
-    .qty-input::-webkit-outer-spin-button {
-      -webkit-appearance:none;
-      margin:0;
-    }
-
-    .qty-input:focus {
-      outline:2px solid rgba(116,80,56,.18);
-      border-color:var(--brown);
     }
 
     .qty-select {
@@ -331,10 +296,6 @@
       font-size:15px;
     }
 
-    .selected-line:last-child {
-      border-bottom:0;
-    }
-
     .history-head {
       display:flex;
       justify-content:space-between;
@@ -373,7 +334,6 @@
 
     .register {
       margin-top:14px;
-      margin-bottom:calc(8px + env(safe-area-inset-bottom));
     }
 
     .register button {
@@ -385,22 +345,12 @@
       color:#fffaf1;
       font-size:22px;
       font-weight:900;
-      box-shadow:0 4px 11px rgba(72,45,29,.27);
-    }
-
-    .register button:disabled {
-      opacity:.38;
-      box-shadow:none;
-    }
-
-    .register button:active {
-      transform:scale(.993);
     }
 
     .toast {
       display:none;
       position:fixed;
-      top:calc(14px + env(safe-area-inset-top));
+      top:14px;
       left:50%;
       transform:translateX(-50%);
       z-index:50;
@@ -409,8 +359,6 @@
       background:var(--ok);
       color:#fff;
       font-weight:900;
-      white-space:nowrap;
-      box-shadow:0 4px 18px rgba(0,0,0,.2);
     }
 
     .loading {
@@ -418,29 +366,6 @@
       pointer-events:none;
     }
 
-    @media(max-width:360px) {
-      .product-list {
-        gap:7px;
-      }
-
-      .product-row {
-        padding:8px;
-        min-height:130px;
-      }
-
-      .product-name {
-        font-size:14px;
-      }
-
-      .qty-control {
-        grid-template-columns:minmax(0,1fr) 42px;
-      }
-
-      .qty-select {
-        width:42px;
-      }
-    }
-  
     .products-placeholder{
       padding:20px 8px;
       text-align:center;
@@ -469,138 +394,164 @@
       font-weight:800;
     }
 
-    @media(max-width:360px){
-      .product-columns,
-      .product-column{
-        gap:7px;
-      }
+    .top-tabs{
+      position:sticky;
+      top:0;
+      z-index:30;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+      margin:8px 0 12px;
+      padding:6px;
+      background:rgba(239,225,204,.94);
+      border-radius:14px;
     }
 
+    .top-tab{
+      min-height:46px;
+      border:1px solid #c7a47c;
+      border-radius:10px;
+      background:#fff8ef;
+      font-size:13px;
+      font-weight:900;
+    }
 
-    /* ===== スマホ確認画面 ===== */
-    .top-tabs{position:sticky;top:0;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 12px;padding:6px;background:rgba(239,225,204,.94);border:1px solid rgba(103,67,42,.20);border-radius:14px;backdrop-filter:blur(8px);box-shadow:0 3px 10px rgba(77,48,30,.10)}
-    .top-tab{min-height:46px;padding:6px 3px;border:1px solid #c7a47c;border-radius:10px;background:#fff8ef;color:#5a402f;font-size:13px;font-weight:900}
-    .top-tab.active{border-color:var(--brown);background:linear-gradient(135deg,#855c3d,#493020);color:#fffaf1}
-    .app-view{display:none}.app-view.active{display:block}
-    .dash-toolbar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
-    .dash-filter{flex:1 1 145px;min-height:46px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fffdf8;color:var(--ink);font-weight:800}
-    .dash-refresh{min-height:46px;padding:8px 12px;border:1px solid #9e8065;border-radius:10px;background:#f3e3ce;color:#4b3020;font-weight:900}
-    .dash-updated{margin:4px 2px 10px;color:#735e4d;font-size:12px;font-weight:700}
-    .dash-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:10px}
-    .metric{padding:13px 10px;border:1px solid #d1b493;border-radius:12px;background:#fffaf2;text-align:center}
-    .metric-label{color:#79614e;font-size:12px;font-weight:800}.metric-value{margin-top:5px;color:#4b3020;font-size:22px;font-weight:900}
-    .dash-table-wrap{overflow-x:auto;border:1px solid #d1b493;border-radius:12px;background:#fffdf8}
-    .dash-table{width:100%;border-collapse:collapse;min-width:500px;font-size:13px}
-    .dash-table th,.dash-table td{padding:10px 8px;border-bottom:1px solid #ead8c2;text-align:right;white-space:nowrap}
-    .dash-table th{background:#ead4b5;color:#4b3020;font-weight:900}.dash-table th:first-child,.dash-table td:first-child{text-align:left;white-space:normal;min-width:180px}.dash-table tr:last-child td{border-bottom:0}
-    .stock-minus{color:#a44739;font-weight:900}.month-list{display:grid;gap:8px}
-    .month-row{display:grid;grid-template-columns:88px 1fr 1fr;gap:8px;align-items:center;padding:11px 10px;border:1px solid #d8bea0;border-radius:11px;background:#fffaf2}
-    .month-row .m{font-weight:900;color:#4b3020}.month-row .v{text-align:right;font-weight:900}
-    .dash-loading,.dash-empty{padding:26px 10px;text-align:center;color:#735e4d;font-weight:800;line-height:1.6}
-    @media(max-width:390px){.top-tab{font-size:12px}.month-row{grid-template-columns:74px 1fr 1fr;font-size:13px}}
+    .top-tab.active{
+      background:linear-gradient(135deg,#855c3d,#493020);
+      color:#fffaf1;
+    }
 
+    .app-view{display:none}
+    .app-view.active{display:block}
 
-    /* ===== 在庫一覧：スマホ縦画面向け最適化 ===== */
-    .inventory-wrap{
-      overflow-x:visible !important;
+    .dash-toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      margin-bottom:10px;
+    }
+
+    .dash-filter{
+      flex:1 1 145px;
+      min-height:46px;
+      padding:8px 10px;
+      border:1.5px solid var(--line);
+      border-radius:10px;
+      background:#fffdf8;
+      font-weight:800;
+    }
+
+    .dash-refresh{
+      min-height:46px;
+      padding:8px 12px;
+      border:1px solid #9e8065;
+      border-radius:10px;
+      background:#f3e3ce;
+      font-weight:900;
+    }
+
+    .dash-updated{
+      margin:4px 2px 10px;
+      color:#735e4d;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .metric{
+      padding:13px 10px;
+      border:1px solid #d1b493;
+      border-radius:12px;
+      background:#fffaf2;
+      text-align:center;
+    }
+
+    .metric-label{
+      color:#79614e;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .metric-value{
+      margin-top:5px;
+      color:#4b3020;
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .dash-table-wrap{
+      overflow-x:auto;
+      border:1px solid #d1b493;
+      border-radius:12px;
+      background:#fffdf8;
+    }
+
+    .dash-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    .dash-table th,
+    .dash-table td{
+      padding:10px 8px;
+      border-bottom:1px solid #ead8c2;
+      text-align:right;
+    }
+
+    .dash-table th:first-child,
+    .dash-table td:first-child{
+      text-align:left;
+    }
+
+    .month-list{
+      display:grid;
+      gap:8px;
+    }
+
+    .month-row{
+      display:grid;
+      grid-template-columns:88px 1fr 1fr;
+      gap:8px;
+      align-items:center;
+      padding:11px 10px;
+      border:1px solid #d8bea0;
+      border-radius:11px;
+      background:#fffaf2;
+    }
+
+    .month-row .m{
+      font-weight:900;
+    }
+
+    .month-row .v{
+      text-align:right;
+      font-weight:900;
     }
 
     .inventory-table{
-      width:100% !important;
-      min-width:0 !important;
+      width:100%;
+      min-width:0;
       table-layout:fixed;
     }
 
-    .inventory-table th,
-    .inventory-table td{
-      padding:8px 4px;
-      font-size:11px;
-    }
-
-    .inventory-table th:first-child,
-    .inventory-table td:first-child{
-      width:61%;
-      min-width:0;
-      white-space:normal;
-      word-break:break-word;
-      line-height:1.25;
-      text-align:left;
-      padding-left:6px;
-      padding-right:5px;
-    }
-
-    .inventory-table th:nth-child(2),
-    .inventory-table td:nth-child(2),
-    .inventory-table th:nth-child(3),
-    .inventory-table td:nth-child(3),
-    .inventory-table th:nth-child(4),
-    .inventory-table td:nth-child(4){
-      width:13%;
-      text-align:center;
-      padding-left:2px;
-      padding-right:2px;
-      white-space:nowrap;
-    }
-
-    @media(max-width:360px){
-      .inventory-table th,
-      .inventory-table td{
-        font-size:10px;
-        padding-top:7px;
-        padding-bottom:7px;
-      }
-
-      .inventory-table th:first-child,
-      .inventory-table td:first-child{
-        width:64%;
-        font-size:10.5px;
-      }
-
-      .inventory-table th:nth-child(2),
-      .inventory-table td:nth-child(2),
-      .inventory-table th:nth-child(3),
-      .inventory-table td:nth-child(3),
-      .inventory-table th:nth-child(4),
-      .inventory-table td:nth-child(4){
-        width:12%;
-      }
-    }
-
-
-    /* 在庫ページ：商品名＋現在庫だけ */
     .inventory-only-stock th:first-child,
     .inventory-only-stock td:first-child{
-      width:78% !important;
-      text-align:left !important;
-      font-size:13px !important;
-      padding:10px 8px !important;
+      width:76%;
+      text-align:left;
     }
 
     .inventory-only-stock th:nth-child(2),
     .inventory-only-stock td:nth-child(2){
-      width:22% !important;
-      text-align:center !important;
-      font-size:14px !important;
+      width:24%;
+      text-align:center;
       font-weight:900;
-      padding:10px 4px !important;
-      white-space:nowrap;
     }
 
-    @media(max-width:390px){
-      .inventory-only-stock th:first-child,
-      .inventory-only-stock td:first-child{
-        width:76% !important;
-        font-size:12px !important;
-      }
-
-      .inventory-only-stock th:nth-child(2),
-      .inventory-only-stock td:nth-child(2){
-        width:24% !important;
-        font-size:13px !important;
-      }
+    .stock-minus{
+      color:#a44739;
+      font-weight:900;
     }
-
-</style>
+  </style>
 </head>
 
 <body>
@@ -611,7 +562,8 @@
 
   <h1>Tom's工房 売上・納品入力</h1>
   <div class="sub">店舗ごとに取扱商品が自動で切り替わります</div>
-  <div class="top-tabs" id="topTabs">
+
+  <div class="top-tabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
     <button class="top-tab" type="button" data-view="monthly" onclick="switchView('monthly')">月別</button>
@@ -620,869 +572,2341 @@
 
   <section id="view-input" class="app-view active">
 
-  <div class="card">
-    <div class="label">日付</div>
-    <input type="date" id="date">
-  </div>
-
-  <div class="card">
-    <div class="label">店舗</div>
-    <div id="storeButtons" class="grid2"></div>
-  </div>
-
-  <div class="card">
-    <div class="label">区分</div>
-
-    <div class="grid2">
-      <button
-        id="saleBtn"
-        type="button"
-        class="choice type-choice sale"
-        onclick="setType('販売')"
-      >
-        <svg class="type-icon" viewBox="0 0 48 48" aria-hidden="true">
-          <path
-            d="M10 17h28l-2.5 23h-23z"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M17 18v-3a7 7 0 0 1 14 0v3"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-          />
-          <path
-            d="M20 25h8M24 22v13M19.5 30h9"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          />
-        </svg>
-        <span>販売</span>
-      </button>
-
-      <button
-        id="deliveryBtn"
-        type="button"
-        class="choice type-choice delivery"
-        onclick="setType('納品')"
-      >
-        <svg class="type-icon" viewBox="0 0 48 48" aria-hidden="true">
-          <path
-            d="M8 17 24 9l16 8v20L24 44 8 37z"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M8 17l16 9 16-9M24 26v18"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M24 3v13M18 10l6 6 6-6"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span>納品</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="label">商品・数量</div>
-    <div id="productArea"></div>
-  </div>
-
-  <div class="card">
-    <div class="summary">
-      <span>店舗</span>
-      <b id="sumStore">未選択</b>
-
-      <span>区分</span>
-      <b id="sumType">納品</b>
-
-      <span>選択商品数</span>
-      <b id="sumCount">0商品</b>
-
-      <span>合計数量</span>
-      <b id="sumQty">0個</b>
-
-      <span>売上金額</span>
-      <b id="sumAmount">－</b>
+    <div class="card">
+      <div class="label">日付</div>
+      <input type="date" id="date">
     </div>
 
-    <div id="selectedProducts" class="selected-products"></div>
-  </div>
-
-  <div class="card">
-    <div class="history-head">
-      <div class="label" style="margin:0">最近の登録</div>
-
-      <button
-        type="button"
-        class="smallBtn danger"
-        onclick="undoLastBatch()"
-      >
-        直前を取消
-      </button>
+    <div class="card">
+      <div class="label">店舗</div>
+      <div id="storeButtons" class="grid2"></div>
     </div>
 
-    <div id="history"></div>
-  </div>
+    <div class="card">
 
-  <div class="note">
-    店舗を選ぶと、その店舗で扱っている商品のみ表示されます。<br>
-    数量を入力した商品のみ登録します。
-  </div>
+      <div class="label">区分</div>
 
-  <div class="register">
-    <button
-      id="registerBtn"
-      type="button"
-      onclick="registerEntries()"
-    >
-      この内容で登録
-    </button>
-  </div>
+      <div class="grid2">
 
+        <button
+          id="saleBtn"
+          type="button"
+          class="choice type-choice sale"
+        >
+          <svg class="type-icon" viewBox="0 0 48 48">
+            <path d="M10 17h28l-2.5 23h-23z" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M17 18v-3a7 7 0 0 1 14 0v3" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M20 25h8M24 22v13M19.5 30h9" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          </svg>
+          <span>販売</span>
+        </button>
+
+        <button
+          id="deliveryBtn"
+          type="button"
+          class="choice type-choice delivery"
+        >
+          <svg class="type-icon" viewBox="0 0 48 48">
+            <path d="M8 17 24 9l16 8v20L24 44 8 37z" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M8 17l16 9 16-9M24 26v18" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M24 3v13M18 10l6 6 6-6" fill="none" stroke="currentColor" stroke-width="3"/>
+          </svg>
+          <span>納品</span>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">商品・数量</div>
+      <div id="productArea"></div>
+    </div>
+
+    <div class="card">
+
+      <div class="summary">
+
+        <span>店舗</span>
+        <b id="sumStore">未選択</b>
+
+        <span>区分</span>
+        <b id="sumType">納品</b>
+
+        <span>選択商品数</span>
+        <b id="sumCount">0商品</b>
+
+        <span>合計数量</span>
+        <b id="sumQty">0個</b>
+
+        <span>売上金額</span>
+        <b id="sumAmount">－</b>
+
+      </div>
+
+      <div id="selectedProducts" class="selected-products"></div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="history-head">
+        <div class="label" style="margin:0">最近の登録</div>
+
+        <button
+          type="button"
+          class="smallBtn danger"
+          onclick="undoLastBatch()"
+        >
+          直前を取消
+        </button>
+      </div>
+
+      <div id="history"></div>
+
+    </div>
+
+    <div class="register">
+      <button id="registerBtn" type="button" onclick="registerEntries()">
+        この内容で登録
+      </button>
+    </div>
 
   </section>
 
   <section id="view-inventory" class="app-view">
-    <div class="card"><div class="label">在庫一覧</div>
-      <div class="dash-toolbar"><select id="inventoryStore" class="dash-filter" onchange="renderInventory()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select><button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button></div>
-      <div id="inventoryUpdated" class="dash-updated"></div><div id="inventoryContent" class="dash-loading">読み込み前です</div>
+
+    <div class="card">
+
+      <div class="label">在庫一覧</div>
+
+      <div class="dash-toolbar">
+
+        <select id="inventoryStore" class="dash-filter" onchange="renderInventory()">
+          <option value="全店舗">全店舗</option>
+          <option value="南城市地域物産館">南城市地域物産館</option>
+          <option value="南の駅やえせ">南の駅やえせ</option>
+        </select>
+
+        <button class="dash-refresh" type="button" onclick="loadDashboard(true)">
+          最新に更新
+        </button>
+
+      </div>
+
+      <div id="inventoryUpdated" class="dash-updated"></div>
+      <div id="inventoryContent">読み込み前です</div>
+
     </div>
+
   </section>
+
   <section id="view-monthly" class="app-view">
-    <div class="card"><div class="label">月別集計</div>
-      <div class="dash-toolbar"><select id="monthlyStore" class="dash-filter" onchange="renderMonthly()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select><button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button></div>
-      <div id="monthlyUpdated" class="dash-updated"></div><div id="monthlyContent" class="dash-loading">読み込み前です</div>
+
+    <div class="card">
+
+      <div class="label">月別集計</div>
+
+      <div class="dash-toolbar">
+
+        <select id="monthlyStore" class="dash-filter" onchange="renderMonthly()">
+          <option value="全店舗">全店舗</option>
+          <option value="南城市地域物産館">南城市地域物産館</option>
+          <option value="南の駅やえせ">南の駅やえせ</option>
+        </select>
+
+        <button class="dash-refresh" type="button" onclick="loadDashboard(true)">
+          最新に更新
+        </button>
+
+      </div>
+
+      <div id="monthlyUpdated" class="dash-updated"></div>
+      <div id="monthlyContent">読み込み前です</div>
+
     </div>
+
   </section>
+
   <section id="view-products" class="app-view">
-    <div class="card"><div class="label">商品別月次販売</div>
-      <div class="dash-toolbar"><select id="productStore" class="dash-filter" onchange="renderProductMonthly()"><option value="全店舗">全店舗</option><option value="南城市地域物産館">南城市地域物産館</option><option value="南の駅やえせ">南の駅やえせ</option></select><select id="productMonth" class="dash-filter" onchange="renderProductMonthly()"></select><button class="dash-refresh" type="button" onclick="loadDashboard(true)">最新に更新</button></div>
-      <div id="productsUpdated" class="dash-updated"></div><div id="productsContent" class="dash-loading">読み込み前です</div>
+
+    <div class="card">
+
+      <div class="label">商品別月次販売</div>
+
+      <div class="dash-toolbar">
+
+        <select id="productStore" class="dash-filter" onchange="renderProductMonthly()">
+          <option value="全店舗">全店舗</option>
+          <option value="南城市地域物産館">南城市地域物産館</option>
+          <option value="南の駅やえせ">南の駅やえせ</option>
+        </select>
+
+        <select id="productMonth" class="dash-filter" onchange="renderProductMonthly()"></select>
+
+        <button class="dash-refresh" type="button" onclick="loadDashboard(true)">
+          最新に更新
+        </button>
+
+      </div>
+
+      <div id="productsUpdated" class="dash-updated"></div>
+      <div id="productsContent">読み込み前です</div>
+
     </div>
+
   </section>
 
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzzp5BCz__MdBl2FSQo1SUNygKjorB_ZhbThI_Tvy0FXZvECr3AkqLKRG3XgA9dsNG86A/exec";
 
-  const STORE_IMAGES = {
-    "南城市地域物産館":
-      "data:image/png;base64,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",
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzzp5BCz__MdBl2FSQo1SUNygKjorB_ZhbThI_Tvy0FXZvECr3AkqLKRG3XgA9dsNG86A/exec";
 
-    "南の駅やえせ":
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAABgFBMVEX+/v7///8XFxkqJCT858vZsodLNy8ODA+uWDT+9dbLe0siHiAhHB1wRjPYgk3VIik5MzIcHSDjuoxPR0WUVDbpISr1ho9NKCbm5uaoakWal5ZZVFJqWFNrZ2bHxsbsqa2JSzGxJirSrINuJyiLiYi4ckiRhni4trWzqJbUyLHY2Nh5c2+pp6gaISJUQzmRJiluY1mJem5kPS23mHZ6UTqVZUfk1b2QXUL7tbakmovGuaTs3cfkiFDEon2LaWyojG7MlJjnHij2mZpPP0FnS06xg4ZuXmCTXGGIclzc0rryfIj/u8GpenzRemvd3d3twZKBf4C8sZ3YHyjXeoHJio3BnnvbnqP5yLbu7u4QIR8nIB+/YDepfYDfgHPcpqre3+DigHYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByAIc3AAAAgHRSTlP+Af////////////////////////////////////////////////////////////////////////////////////////////////////8P////////////D///////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT5E94AAAmRSURBVHja7VmJctrKEvWbhhmDJBhZcoSQwJgdsxgwNnhPnP0mN3ff3v7/X/FOj0RyY3ASJ07VrXruKgeQRn2mu08vo2z87SvLxj3APcA9wF8L4Pc3b978fmuAv5TsVUtfU3tfk01e+Wvp75ASYiiEir6OFR1bUGN3dz8YKu+r+IcE7W6zNIaqcvf6S49ZfxHyIxBE884BIjHcN/pZAtce3LH+ihg2tn9cAhRJiDtFKGH/QfHRdmLC9vajXRL2HbK1o1n/9m6QBKHRKDKCqNwVW5uC/bO9Dxrx/nf/EIwEturqnegvK5f5E7jCGuJzOxCWoH2wlYTeuwP9Vagr8vZFQKKx/QgBxhc34GsqugOAZ+D/o+LQthrbDU6FBjuKLGBxPnS+3ADeNpg/hPIiSh12H7B3TFaQ+HITmgqKi0mIoRfiBgHcVYR+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"
-  };
+/*
+  ここには現在使っている店舗キャラクター画像の
+  Base64データをそのまま残してください。
+*/
+const STORE_IMAGES = {
+  "南城市地域物産館":"ここに現在の南城市キャラクター画像Base64",
+  "南の駅やえせ":"ここに現在の南の駅やえせキャラクター画像Base64"
+};
 
-  const STORE_PRODUCTS = {
-    "南城市地域物産館":[
-      {name:"美らサンドグラス",price:800},
-      {name:"美らサンドタンブラー黒",price:1800},
-      {name:"美らサンドタンブラー白",price:1800},
-      {name:"美らタンブラー2個",price:3500},
-      {name:"タンブラー白ハイビ柄",price:1800},
-      {name:"タンブラー黒ハイビ柄",price:1800},
-      {name:"タンブラー ハイビ柄2個",price:3500},
-      {name:"ランチボックス カーキー",price:1800},
-      {name:"ランチボックス オレンジ",price:1800},
-      {name:"コルクコースター 1個",price:180},
-      {name:"コルクコースター 2個セット",price:350},
-      {name:"魔除けのサン付y2k",price:550},
-      {name:"沖縄ストラップS",price:660},
-      {name:"沖縄ストラップM",price:800},
-      {name:"島ぞうり",price:2000},
-      {name:"ワンポイント島ぞうり",price:1200}
-    ],
 
-    "南の駅やえせ":[
-      {name:"美らサンドタンブラー黒",price:1800},
-      {name:"美らサンドタンブラー白",price:1800},
-      {name:"美らタンブラー2個",price:3500},
-      {name:"タンブラー白ハイビ柄",price:1800},
-      {name:"タンブラー黒ハイビ柄",price:1800},
-      {name:"タンブラー ハイビ柄2個",price:3500},
-      {name:"コルクコースター 1個",price:180},
-      {name:"コルクコースター 2個セット",price:350},
-      {name:"シーちゃんコースターA",price:180},
-      {name:"シーちゃんコースターB",price:180},
-      {name:"シーちゃんコースターC",price:180},
-      {name:"シーちゃんマグ やえせシーちゃん",price:1500},
-      {name:"シーちゃんマグ 海と特産品",price:1500},
-      {name:"シーちゃんマグ めんそーれ",price:1500},
-      {name:"シーちゃん願い事チャーム",price:400},
-      {name:"魔除けのサン付ストラップ",price:550},
-      {name:"パラコード部活ストラップ",price:550}
-    ]
-  };
+const STORE_PRODUCTS = {
 
-  const STORES = Object.keys(STORE_PRODUCTS);
+  "南城市地域物産館":[
+    {name:"美らサンドグラス",price:800},
+    {name:"美らサンドタンブラー黒",price:1800},
+    {name:"美らサンドタンブラー白",price:1800},
+    {name:"美らタンブラー2個",price:3500},
+    {name:"タンブラー白ハイビ柄",price:1800},
+    {name:"タンブラー黒ハイビ柄",price:1800},
+    {name:"タンブラー ハイビ柄2個",price:3500},
+    {name:"ランチボックス カーキー",price:1800},
+    {name:"ランチボックス オレンジ",price:1800},
+    {name:"コルクコースター 1個",price:180},
+    {name:"コルクコースター 2個セット",price:350},
+    {name:"魔除けのサン付y2k",price:550},
+    {name:"沖縄ストラップS",price:660},
+    {name:"沖縄ストラップM",price:800},
+    {name:"島ぞうり",price:2000},
+    {name:"ワンポイント島ぞうり",price:1200}
+  ],
 
-  let state = {
-    store:localStorage.getItem("toms_store") || "",
-    type:localStorage.getItem("toms_type") || "納品",
-    quantities:{}
-  };
+  "南の駅やえせ":[
+    {name:"美らサンドタンブラー黒",price:1800},
+    {name:"美らサンドタンブラー白",price:1800},
+    {name:"美らタンブラー2個",price:3500},
+    {name:"タンブラー白ハイビ柄",price:1800},
+    {name:"タンブラー黒ハイビ柄",price:1800},
+    {name:"タンブラー ハイビ柄2個",price:3500},
+    {name:"コルクコースター 1個",price:180},
+    {name:"コルクコースター 2個セット",price:350},
+    {name:"シーちゃんコースターA",price:180},
+    {name:"シーちゃんコースターB",price:180},
+    {name:"シーちゃんコースターC",price:180},
+    {name:"シーちゃんマグ やえせシーちゃん",price:1500},
+    {name:"シーちゃんマグ 海と特産品",price:1500},
+    {name:"シーちゃんマグ めんそーれ",price:1500},
+    {name:"シーちゃん願い事チャーム",price:400},
+    {name:"魔除けのサン付ストラップ",price:550},
+    {name:"パラコード部活ストラップ",price:550}
+  ]
 
-  function localToday(){
-    const d = new Date();
-    const tz = d.getTimezoneOffset() * 60000;
-    return new Date(d - tz).toISOString().slice(0,10);
+};
+
+
+const STORES = Object.keys(STORE_PRODUCTS);
+
+
+let state = {
+  store:localStorage.getItem("toms_store") || "",
+  type:localStorage.getItem("toms_type") || "納品",
+  quantities:{}
+};
+
+
+function localToday(){
+
+  const d = new Date();
+
+  const tz =
+  d.getTimezoneOffset() * 60000;
+
+  return new Date(d - tz)
+  .toISOString()
+  .slice(0,10);
+
+}
+
+
+document.getElementById("date").value =
+localToday();
+
+
+const storeBox =
+document.getElementById("storeButtons");
+
+const productArea =
+document.getElementById("productArea");
+
+const saleBtn =
+document.getElementById("saleBtn");
+
+const deliveryBtn =
+document.getElementById("deliveryBtn");
+
+const registerBtn =
+document.getElementById("registerBtn");
+
+
+STORES.forEach(store=>{
+
+  const b =
+  document.createElement("button");
+
+  b.type =
+  "button";
+
+  b.className =
+  "choice store-choice";
+
+  b.dataset.store =
+  store;
+
+  b.innerHTML =
+  `<img src="${STORE_IMAGES[store]}" alt=""><span class="store-name">${store}</span>`;
+
+  b.addEventListener(
+    "click",
+    ()=>setStore(store)
+  );
+
+  storeBox.appendChild(b);
+
+});
+
+
+saleBtn.onclick =
+()=>setType("販売");
+
+deliveryBtn.onclick =
+()=>setType("納品");
+
+
+function currentProducts(){
+
+  return state.store
+  ? STORE_PRODUCTS[state.store]
+  : [];
+
+}
+
+
+function qtyKey(productName){
+
+  return state.store +
+  "||" +
+  productName;
+
+}
+
+
+function getQty(productName){
+
+  return state.quantities[
+    qtyKey(productName)
+  ] || "";
+
+}
+
+
+function setQty(productName,value){
+
+  const key =
+  qtyKey(productName);
+
+  if(value === ""){
+
+    delete state.quantities[key];
+
+  }else{
+
+    state.quantities[key] =
+    value;
+
   }
 
-  document.getElementById("date").value = localToday();
+}
 
-  const storeBox = document.getElementById("storeButtons");
-  const productArea = document.getElementById("productArea");
-  const saleBtn = document.getElementById("saleBtn");
-  const deliveryBtn = document.getElementById("deliveryBtn");
-  const registerBtn = document.getElementById("registerBtn");
 
-  STORES.forEach(store=>{
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "choice store-choice";
-    b.dataset.store = store;
-    b.innerHTML = `<img src="${STORE_IMAGES[store]}" alt=""><span class="store-name">${store}</span>`;
-    b.addEventListener("click",()=>setStore(store));
-    storeBox.appendChild(b);
-  });
+function setStore(store){
 
-  saleBtn.onclick = ()=>setType("販売");
-  deliveryBtn.onclick = ()=>setType("納品");
+  if(
+    state.store !== store
+  ){
 
-  function currentProducts(){
-    return state.store ? (STORE_PRODUCTS[state.store] || []) : [];
-  }
-
-  function qtyKey(productName){
-    return state.store + "||" + productName;
-  }
-
-  function getQty(productName){
-    return state.quantities[qtyKey(productName)] || "";
-  }
-
-  function setQty(productName,value){
-    const key = qtyKey(productName);
-    if(value === ""){
-      delete state.quantities[key];
-    }else{
-      state.quantities[key] = value;
-    }
-  }
-
-  function setStore(store){
-    if(state.store !== store){
-      state.quantities = {};
-    }
-    state.store = store;
-    localStorage.setItem("toms_store",store);
-    render();
-  }
-
-  function setType(type){
-    state.type = type;
-    localStorage.setItem("toms_type",type);
-    render();
-  }
-
-  function selectedItems(){
-    return currentProducts()
-      .map(product=>({
-        product,
-        qty:Number(getQty(product.name))
-      }))
-      .filter(x=>Number.isFinite(x.qty) && (x.qty === -1 || x.qty >= 1));
-  }
-
-  function yen(n){
-    return Number(n).toLocaleString("ja-JP") + "円";
-  }
-
-  function renderProducts(){
-    if(!state.store){
-      productArea.innerHTML = `
-        <div class="products-placeholder">
-          先に店舗を選択してください。<br>
-          店舗ごとの商品一覧がここに表示されます。
-        </div>
-      `;
-      return;
-    }
-
-    const products = currentProducts();
-    const split = Math.ceil(products.length / 2);
-    const left = products.slice(0,split);
-    const right = products.slice(split);
-
-    productArea.innerHTML = `
-      <div class="product-columns">
-        <div class="product-column" id="productColLeft"></div>
-        <div class="product-column" id="productColRight"></div>
-      </div>
-    `;
-
-    renderProductColumn(document.getElementById("productColLeft"),left);
-    renderProductColumn(document.getElementById("productColRight"),right);
-  }
-
-  function renderProductColumn(container,products){
-    products.forEach(product=>{
-      const row = document.createElement("div");
-      const qty = Number(getQty(product.name));
-
-      row.className = "product-row" +
-        (Number.isFinite(qty) && (qty === -1 || qty >= 1) ? " has-qty" : "");
-      row.dataset.product = product.name;
-
-      const nameWrap = document.createElement("div");
-      nameWrap.innerHTML = `
-        <div class="product-name">${product.name}</div>
-        <div class="product-price">@${product.price.toLocaleString("ja-JP")}</div>
-      `;
-
-      const control = document.createElement("div");
-      control.className = "qty-control";
-
-      const input = document.createElement("input");
-      input.type = "number";
-      input.inputMode = "numeric";
-      input.min = "-1";
-      input.max = "99";
-      input.step = "1";
-      input.placeholder = "数量";
-      input.className = "qty-input";
-      input.value = getQty(product.name);
-
-      input.addEventListener("input",()=>{
-        if(input.value === ""){
-          setQty(product.name,"");
-        }else{
-          const n = Number(input.value);
-          if(Number.isFinite(n)) setQty(product.name,n);
-        }
-        renderSummaryOnly();
-        updateProductHighlights();
-      });
-
-      input.addEventListener("blur",()=>{
-        if(input.value === ""){
-          setQty(product.name,"");
-        }else{
-          let v = Math.round(Number(input.value));
-          if(!Number.isFinite(v)) v = 1;
-          v = Math.min(99,Math.max(1,v));
-          input.value = v;
-          setQty(product.name,v);
-        }
-        renderSummaryOnly();
-        updateProductHighlights();
-      });
-
-      const select = document.createElement("select");
-      select.className = "qty-select";
-
-      const blank = document.createElement("option");
-      blank.value = "";
-      blank.textContent = "▼";
-      select.appendChild(blank);
-
-      const minusOne = document.createElement("option");
-      minusOne.value = "-1";
-      minusOne.textContent = "-1";
-      select.appendChild(minusOne);
-
-      for(let n=1;n<=30;n++){
-        const o = document.createElement("option");
-        o.value = n;
-        o.textContent = n;
-        select.appendChild(o);
-      }
-
-      select.addEventListener("change",()=>{
-        if(select.value !== ""){
-          const v = Number(select.value);
-          input.value = v;
-          setQty(product.name,v);
-          renderSummaryOnly();
-          updateProductHighlights();
-        }
-        select.value = "";
-      });
-
-      control.appendChild(input);
-      control.appendChild(select);
-      row.appendChild(nameWrap);
-      row.appendChild(control);
-      container.appendChild(row);
-    });
-  }
-
-  function updateProductHighlights(){
-    document.querySelectorAll(".product-row").forEach(row=>{
-      const q = Number(getQty(row.dataset.product));
-      row.classList.toggle("has-qty",Number.isFinite(q) && (q === -1 || q >= 1));
-    });
-  }
-
-  function renderSummaryOnly(){
-    const items = selectedItems();
-    const totalQty = items.reduce((sum,x)=>sum+x.qty,0);
-    const totalAmount = items.reduce((sum,x)=>sum+x.product.price*x.qty,0);
-
-    document.getElementById("sumStore").textContent = state.store || "未選択";
-    document.getElementById("sumType").textContent = state.type;
-    document.getElementById("sumCount").textContent = items.length + "商品";
-    document.getElementById("sumQty").textContent = totalQty + "個";
-    document.getElementById("sumAmount").textContent =
-      state.type === "販売" ? yen(totalAmount) : "－";
-
-    document.getElementById("selectedProducts").innerHTML =
-      items.length
-      ? items.map(x=>`
-          <div class="selected-line">
-            <span>${x.product.name}</span>
-            <b>${x.qty}個</b>
-          </div>
-        `).join("")
-      : '<div class="note">数量を入力した商品がここに表示されます。</div>';
-
-    registerBtn.disabled = !state.store || items.length === 0;
-  }
-
-  function render(){
-    [...storeBox.children].forEach(b=>{
-      b.classList.toggle("active",b.dataset.store === state.store);
-    });
-
-    saleBtn.classList.toggle("active",state.type === "販売");
-    deliveryBtn.classList.toggle("active",state.type === "納品");
-
-    renderProducts();
-    renderSummaryOnly();
-    drawHistory();
-  }
-
-  function localHistory(){
-    try{
-      return JSON.parse(localStorage.getItem("toms_batches") || "[]");
-    }catch(e){
-      return [];
-    }
-  }
-
-  function saveHistory(a){
-    localStorage.setItem("toms_batches",JSON.stringify(a));
-  }
-
-  function requestAppsScript(params){
-    return new Promise((resolve,reject)=>{
-      const callbackName =
-        "__tomsAction_" + Date.now() + "_" + Math.floor(Math.random()*100000);
-
-      const script =
-        document.createElement("script");
-
-      let finished = false;
-
-      const cleanup = ()=>{
-        try{ delete window[callbackName]; }catch(e){ window[callbackName] = undefined; }
-        if(script.parentNode) script.parentNode.removeChild(script);
-      };
-
-      const timer = setTimeout(()=>{
-        if(finished) return;
-        finished = true;
-        cleanup();
-        reject(new Error("timeout"));
-      },15000);
-
-      window[callbackName] = result=>{
-        if(finished) return;
-        finished = true;
-        clearTimeout(timer);
-        cleanup();
-
-        if(result && result.ok){
-          resolve(result);
-        }else{
-          reject(new Error((result && result.message) || "登録に失敗しました"));
-        }
-      };
-
-      const query =
-        new URLSearchParams({
-          ...params,
-          callback:callbackName,
-          t:String(Date.now())
-        });
-
-      script.onerror = ()=>{
-        if(finished) return;
-        finished = true;
-        clearTimeout(timer);
-        cleanup();
-        reject(new Error("network"));
-      };
-
-      script.src =
-        API_URL + "?" + query.toString();
-
-      document.head.appendChild(script);
-    });
-  }
-
-  async function registerEntries(){
-    const items = selectedItems();
-
-    if(!state.store){
-      alert("店舗を選択してください");
-      return;
-    }
-
-    if(items.length === 0){
-      alert("数量を入力してください");
-      return;
-    }
-
-    const batchId = String(Date.now());
-    const date = document.getElementById("date").value;
-
-    const entries = items.map((x,index)=>({
-      id:batchId + "-" + index,
-      batchId,
-      date,
-      store:state.store,
-      type:state.type,
-      product:x.product.name,
-      qty:x.qty,
-      unitPrice:state.type === "販売" ? x.product.price : "",
-      amount:state.type === "販売" ? x.product.price * x.qty : ""
-    }));
-
-    setLoading(true);
-
-    try{
-      await requestAppsScript({
-        action:"submit",
-        entries:JSON.stringify(entries)
-      });
-
-      const history = localHistory();
-
-      history.push({
-        batchId,
-        date,
-        store:state.store,
-        type:state.type,
-        items:entries.map(x=>({product:x.product,qty:x.qty}))
-      });
-
-      saveHistory(history);
-      state.quantities = {};
-
-      // 新しい登録後は確認画面のキャッシュを無効化
-      dashboardData = null;
-      dashboardLoadedAt = 0;
-
-      setLoading(false);
-      showToast("登録しました");
-      render();
-
-      // 書き込み完了後に最新データを先読み
-      setTimeout(()=>loadDashboard(true),1200);
-    }catch(err){
-      setLoading(false);
-      alert("登録できませんでした。通信状態を確認してください。");
-    }
-  }
-
-  function clearQuantities(){
     state.quantities = {};
-    render();
+
   }
 
-  async function undoLastBatch(){
-    const history = localHistory();
+  state.store =
+  store;
 
-    if(history.length === 0){
-      showToast("取消す登録がありません");
-      return;
-    }
-
-    const batch = history[history.length - 1];
-    const text = batch.items.map(x=>x.product+" × "+x.qty).join("\n");
-
-    if(!confirm("直前の登録を取消しますか？\n\n"+text)){
-      return;
-    }
-
-    setLoading(true);
-
-    try{
-      await requestAppsScript({
-        action:"undo",
-        batchId:batch.batchId
-      });
-
-      history.pop();
-      saveHistory(history);
-      setLoading(false);
-      showToast("取消しました");
-      render();
-    }catch(err){
-      setLoading(false);
-      alert("取消できませんでした。通信状態を確認してください。");
-    }
-  }
-
-  function drawHistory(){
-    const box = document.getElementById("history");
-    const history = localHistory().slice(-5).reverse();
-
-    if(history.length === 0){
-      box.innerHTML =
-        '<div class="note" style="padding:12px 0">まだ登録はありません。</div>';
-      return;
-    }
-
-    box.innerHTML = history.map(batch=>{
-      const total = batch.items.reduce((sum,x)=>sum+x.qty,0);
-
-      return `
-        <div class="history-row">
-          <div>
-            <b>${batch.type}</b> ${batch.items.length}商品
-            <br>
-            <span style="color:#735e4d">${batch.date}・${batch.store}</span>
-          </div>
-          <div style="font-weight:900">${total}個</div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function showToast(msg){
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.style.display = "block";
-    setTimeout(()=>t.style.display="none",1700);
-  }
-
-  function setLoading(v){
-    document.getElementById("app").classList.toggle("loading",v);
-  }
-
-  window.setType = setType;
-  window.registerEntries = registerEntries;
-  window.undoLastBatch = undoLastBatch;
-
-
-  /* ===== 確認画面 ===== */
-  let dashboardData = null;
-  let dashboardLoading = false;
-  let dashboardLoadedAt = 0;
-
-  function switchView(view){
-    document.querySelectorAll('.app-view').forEach(el=>el.classList.toggle('active',el.id==='view-'+view));
-    document.querySelectorAll('.top-tab').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===view));
-    if(view!=='input') loadDashboard(false);
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-
-  function loadDashboard(force){
-    if(dashboardLoading) return;
-    if(!force && dashboardData && (Date.now()-dashboardLoadedAt<60000)){renderAllDashboard();return;}
-    dashboardLoading=true; setDashboardLoading('最新データを読み込んでいます…');
-    const callbackName='__tomsDashboard_'+Date.now();
-    const script=document.createElement('script'); let finished=false;
-    const cleanup=()=>{try{delete window[callbackName]}catch(e){window[callbackName]=undefined} if(script.parentNode) script.parentNode.removeChild(script)};
-    const timer=setTimeout(()=>{if(finished)return;finished=true;dashboardLoading=false;cleanup();setDashboardError('データを取得できませんでした。通信状態を確認してください。')},15000);
-    window[callbackName]=data=>{if(finished)return;finished=true;clearTimeout(timer);dashboardLoading=false;cleanup();if(!data||data.ok===false){setDashboardError((data&&data.message)||'データを取得できませんでした。');return;}dashboardData=data;dashboardLoadedAt=Date.now();setupProductMonthOptions();renderAllDashboard();};
-    script.onerror=()=>{if(finished)return;finished=true;clearTimeout(timer);dashboardLoading=false;cleanup();setDashboardError('データを取得できませんでした。')};
-    script.src=API_URL+'?mode=dashboard&callback='+encodeURIComponent(callbackName)+'&t='+Date.now();
-    document.head.appendChild(script);
-  }
-
-  function setDashboardLoading(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-loading">'+escapeHtml(message)+'</div>'})}
-  function setDashboardError(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-empty">'+escapeHtml(message)+'</div>'})}
-  function renderAllDashboard(){if(!dashboardData)return;renderInventory();renderMonthly();renderProductMonthly();const text=dashboardData.lastUpdated?'最終登録：'+dashboardData.lastUpdated:'データを取得しました';['inventoryUpdated','monthlyUpdated','productsUpdated'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text})}
-
-  function setupProductMonthOptions(){
-    if(!dashboardData||!Array.isArray(dashboardData.months))return;
-    const select=document.getElementById('productMonth');const old=select.value;const today=localToday().slice(0,7);
-    select.innerHTML=dashboardData.months.map(m=>'<option value="'+escapeHtml(m.key)+'">'+escapeHtml(m.label)+'</option>').join('');
-    if(dashboardData.months.some(m=>m.key===old))select.value=old;else if(dashboardData.months.some(m=>m.key===today))select.value=today;else if(dashboardData.months.length)select.value=dashboardData.months[dashboardData.months.length-1].key;
-  }
-
-  function renderInventory(){
-    const box = document.getElementById("inventoryContent");
-    if(!dashboardData){
-      box.innerHTML = '<div class="dash-loading">読み込み中…</div>';
-      return;
-    }
-
-    const store = document.getElementById("inventoryStore").value;
-    const rows = (dashboardData.inventory && dashboardData.inventory[store]) || [];
-
-    const tableRows = rows.map(r=>`
-      <tr>
-        <td>${escapeHtml(r.product)}</td>
-        <td class="${Number(r.stock)<0?'stock-minus':''}">${num(r.stock)}個</td>
-      </tr>
-    `).join("");
-
-    box.innerHTML = `
-      <div class="dash-table-wrap inventory-wrap">
-        <table class="dash-table inventory-table inventory-only-stock">
-          <thead><tr><th>商品名</th><th>在庫</th></tr></thead>
-          <tbody>${tableRows || '<tr><td colspan="2">データなし</td></tr>'}</tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  function renderMonthly(){
-    const box = document.getElementById("monthlyContent");
-    if(!dashboardData){
-      box.innerHTML = '<div class="dash-loading">読み込み中…</div>';
-      return;
-    }
-
-    const store = document.getElementById("monthlyStore").value;
-    const rows = (dashboardData.monthly && dashboardData.monthly[store]) || [];
-
-    box.innerHTML = `
-      <div class="month-list">
-        ${rows.map(r=>`
-          <div class="month-row">
-            <div class="m">${escapeHtml(r.label)}</div>
-            <div class="v">${num(r.qty)}個</div>
-            <div class="v">${yen(r.amount)}</div>
-          </div>
-        `).join("")}
-      </div>
-    `;
-  }
-
-  function renderProductMonthly(){
-    const box=document.getElementById('productsContent');
-    if(!dashboardData){
-      box.innerHTML='<div class="dash-loading">読み込み中…</div>';
-      return;
-    }
-
-    const store=document.getElementById('productStore').value;
-    const month=document.getElementById('productMonth').value;
-    const byStore=(dashboardData.productMonthly&&dashboardData.productMonthly[store])||{};
-    const rows=byStore[month]||[];
-    const soldRows=rows.filter(r=>Number(r.qty||0)>0);
-
-    function getUnitPrice(productName){
-      if(store!=='全店舗'){
-        const list=STORE_PRODUCTS[store]||[];
-        const hit=list.find(p=>p.name===productName);
-        return hit ? Number(hit.price||0) : 0;
-      }
-
-      for(const storeName of Object.keys(STORE_PRODUCTS)){
-        const hit=(STORE_PRODUCTS[storeName]||[]).find(p=>p.name===productName);
-        if(hit) return Number(hit.price||0);
-      }
-
-      return 0;
-    }
-
-    const detailRows=soldRows.map(r=>{
-      const qty=Number(r.qty||0);
-      const unitPrice=getUnitPrice(r.product);
-      const amount=qty*unitPrice;
-      return {
-        product:r.product,
-        qty,
-        unitPrice,
-        amount
-      };
-    });
-
-    const totalQty=detailRows.reduce((s,r)=>s+r.qty,0);
-    const totalAmount=detailRows.reduce((s,r)=>s+r.amount,0);
-
-    if(!detailRows.length){
-      box.innerHTML=
-        '<div class="metric" style="margin-bottom:10px">'+
-          '<div class="metric-label">販売個数 合計</div>'+
-          '<div class="metric-value">0個</div>'+
-        '</div>'+
-        '<div class="metric" style="margin-bottom:10px">'+
-          '<div class="metric-label">売上金額 合計</div>'+
-          '<div class="metric-value">0円</div>'+
-        '</div>'+
-        '<div class="dash-empty">この月の販売実績はありません。</div>';
-      return;
-    }
-
-    box.innerHTML=
-      '<div class="metric" style="margin-bottom:10px">'+
-        '<div class="metric-label">販売個数 合計</div>'+
-        '<div class="metric-value">'+num(totalQty)+'個</div>'+
-      '</div>'+
-      '<div class="metric" style="margin-bottom:10px">'+
-        '<div class="metric-label">売上金額 合計</div>'+
-        '<div class="metric-value">'+num(totalAmount)+'円</div>'+
-      '</div>'+
-      '<div class="dash-table-wrap">'+
-        '<table class="dash-table" style="min-width:0">'+
-          '<thead>'+
-            '<tr>'+
-              '<th>商品名</th>'+
-              '<th>販売個数</th>'+
-              '<th>売上金額</th>'+
-            '</tr>'+
-          '</thead>'+
-          '<tbody>'+
-            detailRows.map(r=>
-              '<tr>'+
-                '<td>'+escapeHtml(r.product)+'</td>'+
-                '<td>'+num(r.qty)+'個</td>'+
-                '<td>'+num(r.amount)+'円</td>'+
-              '</tr>'
-            ).join('')+
-            '<tr>'+
-              '<td><b>合計</b></td>'+
-              '<td><b>'+num(totalQty)+'個</b></td>'+
-              '<td><b>'+num(totalAmount)+'円</b></td>'+
-            '</tr>'+
-          '</tbody>'+
-        '</table>'+
-      '</div>';
-  }
-
-  function escapeHtml(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-  function num(value){return Number(value||0).toLocaleString('ja-JP')}
-  window.switchView=switchView;window.loadDashboard=loadDashboard;window.renderInventory=renderInventory;window.renderMonthly=renderMonthly;window.renderProductMonthly=renderProductMonthly;
-
+  localStorage.setItem(
+    "toms_store",
+    store
+  );
 
   render();
+
+}
+
+
+function setType(type){
+
+  state.type =
+  type;
+
+  localStorage.setItem(
+    "toms_type",
+    type
+  );
+
+  render();
+
+}
+
+
+function selectedItems(){
+
+  return currentProducts()
+
+  .map(product=>({
+
+    product,
+
+    qty:
+    Number(
+      getQty(product.name)
+    )
+
+  }))
+
+  .filter(x=>
+    Number.isFinite(x.qty) &&
+    (
+      (x.qty >= -30 && x.qty <= -1) ||
+      x.qty >= 1
+    )
+  );
+
+}
+
+
+function yen(n){
+
+  return Number(n)
+  .toLocaleString("ja-JP") +
+  "円";
+
+}
+
+
+function renderProducts(){
+
+  if(!state.store){
+
+    productArea.innerHTML = `
+      <div class="products-placeholder">
+        先に店舗を選択してください。
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  const products =
+  currentProducts();
+
+
+  const split =
+  Math.ceil(
+    products.length / 2
+  );
+
+
+  const left =
+  products.slice(
+    0,
+    split
+  );
+
+
+  const right =
+  products.slice(
+    split
+  );
+
+
+  productArea.innerHTML = `
+    <div class="product-columns">
+      <div class="product-column" id="productColLeft"></div>
+      <div class="product-column" id="productColRight"></div>
+    </div>
+  `;
+
+
+  renderProductColumn(
+    document.getElementById("productColLeft"),
+    left
+  );
+
+
+  renderProductColumn(
+    document.getElementById("productColRight"),
+    right
+  );
+
+}
+
+
+function renderProductColumn(container,products){
+
+  products.forEach(product=>{
+
+    const row =
+    document.createElement("div");
+
+
+    const qty =
+    Number(
+      getQty(product.name)
+    );
+
+
+    row.className =
+    "product-row" +
+    (
+      Number.isFinite(qty) &&
+      (
+        (qty >= -30 && qty <= -1) ||
+        qty >= 1
+      )
+      ? " has-qty"
+      : ""
+    );
+
+
+    row.dataset.product =
+    product.name;
+
+
+    const nameWrap =
+    document.createElement("div");
+
+
+    nameWrap.innerHTML = `
+      <div class="product-name">
+        ${product.name}
+      </div>
+
+      <div class="product-price">
+        @${product.price.toLocaleString("ja-JP")}
+      </div>
+    `;
+
+
+    const control =
+    document.createElement("div");
+
+
+    control.className =
+    "qty-control";
+
+
+    const input =
+    document.createElement("input");
+
+
+    input.type =
+    "number";
+
+    input.inputMode =
+    "numeric";
+
+    input.min =
+    "-30";
+
+    input.max =
+    "99";
+
+    input.step =
+    "1";
+
+    input.placeholder =
+    "数量";
+
+    input.className =
+    "qty-input";
+
+    input.value =
+    getQty(product.name);
+
+
+    input.addEventListener(
+      "input",
+      ()=>{
+
+        if(input.value === ""){
+
+          setQty(
+            product.name,
+            ""
+          );
+
+        }else{
+
+          const n =
+          Number(
+            input.value
+          );
+
+          if(
+            Number.isFinite(n)
+          ){
+
+            setQty(
+              product.name,
+              n
+            );
+
+          }
+
+        }
+
+
+        renderSummaryOnly();
+
+        updateProductHighlights();
+
+      }
+    );
+
+
+    input.addEventListener(
+      "blur",
+      ()=>{
+
+        if(input.value === ""){
+
+          setQty(
+            product.name,
+            ""
+          );
+
+        }else{
+
+          let v =
+          Math.round(
+            Number(
+              input.value
+            )
+          );
+
+
+          if(
+            !Number.isFinite(v)
+          ){
+
+            v = 1;
+
+          }
+
+
+          if(v === 0){
+
+            input.value =
+            "";
+
+            setQty(
+              product.name,
+              ""
+            );
+
+          }else{
+
+            v =
+            Math.min(
+              99,
+              Math.max(
+                -30,
+                v
+              )
+            );
+
+
+            input.value =
+            v;
+
+
+            setQty(
+              product.name,
+              v
+            );
+
+          }
+
+        }
+
+
+        renderSummaryOnly();
+
+        updateProductHighlights();
+
+      }
+    );
+
+
+    const select =
+    document.createElement("select");
+
+
+    select.className =
+    "qty-select";
+
+
+    const blank =
+    document.createElement("option");
+
+
+    blank.value =
+    "";
+
+    blank.textContent =
+    "▼";
+
+
+    select.appendChild(
+      blank
+    );
+
+
+    // マイナス数量：-1 ～ -30
+    for(
+      let n = -1;
+      n >= -30;
+      n--
+    ){
+
+      const o =
+      document.createElement("option");
+
+      o.value =
+      n;
+
+      o.textContent =
+      n;
+
+      select.appendChild(
+        o
+      );
+
+    }
+
+
+    // プラス数量：1 ～ 30
+    for(
+      let n = 1;
+      n <= 30;
+      n++
+    ){
+
+      const o =
+      document.createElement("option");
+
+      o.value =
+      n;
+
+      o.textContent =
+      n;
+
+      select.appendChild(
+        o
+      );
+
+    }
+
+
+    select.addEventListener(
+      "change",
+      ()=>{
+
+        if(
+          select.value !== ""
+        ){
+
+          const v =
+          Number(
+            select.value
+          );
+
+
+          input.value =
+          v;
+
+
+          setQty(
+            product.name,
+            v
+          );
+
+
+          renderSummaryOnly();
+
+          updateProductHighlights();
+
+        }
+
+
+        select.value =
+        "";
+
+      }
+    );
+
+
+    control.appendChild(
+      input
+    );
+
+
+    control.appendChild(
+      select
+    );
+
+
+    row.appendChild(
+      nameWrap
+    );
+
+
+    row.appendChild(
+      control
+    );
+
+
+    container.appendChild(
+      row
+    );
+
+  });
+
+}
+
+
+function updateProductHighlights(){
+
+  document
+  .querySelectorAll(
+    ".product-row"
+  )
+  .forEach(row=>{
+
+    const q =
+    Number(
+      getQty(
+        row.dataset.product
+      )
+    );
+
+
+    row.classList.toggle(
+      "has-qty",
+
+      Number.isFinite(q) &&
+      (
+        (q >= -30 && q <= -1) ||
+        q >= 1
+      )
+
+    );
+
+  });
+
+}
+
+
+function renderSummaryOnly(){
+
+  const items =
+  selectedItems();
+
+
+  const totalQty =
+  items.reduce(
+    (sum,x)=>
+    sum + x.qty,
+    0
+  );
+
+
+  const totalAmount =
+  items.reduce(
+    (sum,x)=>
+    sum +
+    x.product.price *
+    x.qty,
+    0
+  );
+
+
+  document.getElementById(
+    "sumStore"
+  ).textContent =
+  state.store || "未選択";
+
+
+  document.getElementById(
+    "sumType"
+  ).textContent =
+  state.type;
+
+
+  document.getElementById(
+    "sumCount"
+  ).textContent =
+  items.length +
+  "商品";
+
+
+  document.getElementById(
+    "sumQty"
+  ).textContent =
+  totalQty +
+  "個";
+
+
+  document.getElementById(
+    "sumAmount"
+  ).textContent =
+
+  state.type === "販売"
+  ? yen(totalAmount)
+  : "－";
+
+
+  document.getElementById(
+    "selectedProducts"
+  ).innerHTML =
+
+  items.length
+
+  ? items.map(x=>`
+      <div class="selected-line">
+        <span>
+          ${x.product.name}
+        </span>
+
+        <b>
+          ${x.qty}個
+        </b>
+      </div>
+    `).join("")
+
+  : '<div class="note">数量を入力した商品がここに表示されます。</div>';
+
+
+  registerBtn.disabled =
+  !state.store ||
+  items.length === 0;
+
+}
+
+
+function render(){
+
+  [...storeBox.children]
+  .forEach(b=>{
+
+    b.classList.toggle(
+      "active",
+      b.dataset.store ===
+      state.store
+    );
+
+  });
+
+
+  saleBtn.classList.toggle(
+    "active",
+    state.type === "販売"
+  );
+
+
+  deliveryBtn.classList.toggle(
+    "active",
+    state.type === "納品"
+  );
+
+
+  renderProducts();
+
+  renderSummaryOnly();
+
+  drawHistory();
+
+}
+
+
+function localHistory(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        "toms_batches"
+      ) || "[]"
+    );
+
+  }catch(e){
+
+    return [];
+
+  }
+
+}
+
+
+function saveHistory(a){
+
+  localStorage.setItem(
+    "toms_batches",
+    JSON.stringify(a)
+  );
+
+}
+
+
+function requestAppsScript(params){
+
+  return new Promise(
+    (
+      resolve,
+      reject
+    )=>{
+
+      const callbackName =
+
+      "__tomsAction_" +
+
+      Date.now() +
+
+      "_" +
+
+      Math.floor(
+        Math.random() *
+        100000
+      );
+
+
+      const script =
+      document.createElement(
+        "script"
+      );
+
+
+      let finished =
+      false;
+
+
+      const cleanup =
+      ()=>{
+
+        try{
+
+          delete window[
+            callbackName
+          ];
+
+        }catch(e){
+
+          window[
+            callbackName
+          ] =
+          undefined;
+
+        }
+
+
+        if(
+          script.parentNode
+        ){
+
+          script.parentNode
+          .removeChild(
+            script
+          );
+
+        }
+
+      };
+
+
+      const timer =
+      setTimeout(
+        ()=>{
+
+          if(finished)
+          return;
+
+
+          finished =
+          true;
+
+
+          cleanup();
+
+
+          reject(
+            new Error(
+              "timeout"
+            )
+          );
+
+        },
+        15000
+      );
+
+
+      window[
+        callbackName
+      ] =
+      result=>{
+
+
+        if(finished)
+        return;
+
+
+        finished =
+        true;
+
+
+        clearTimeout(
+          timer
+        );
+
+
+        cleanup();
+
+
+        if(
+          result &&
+          result.ok
+        ){
+
+          resolve(
+            result
+          );
+
+        }else{
+
+          reject(
+            new Error(
+              (
+                result &&
+                result.message
+              ) ||
+              "登録に失敗しました"
+            )
+          );
+
+        }
+
+      };
+
+
+      const query =
+      new URLSearchParams({
+        ...params,
+        callback:
+        callbackName,
+        t:String(
+          Date.now()
+        )
+      });
+
+
+      script.onerror =
+      ()=>{
+
+        if(finished)
+        return;
+
+
+        finished =
+        true;
+
+
+        clearTimeout(
+          timer
+        );
+
+
+        cleanup();
+
+
+        reject(
+          new Error(
+            "network"
+          )
+        );
+
+      };
+
+
+      script.src =
+
+      API_URL +
+
+      "?" +
+
+      query.toString();
+
+
+      document.head
+      .appendChild(
+        script
+      );
+
+    }
+  );
+
+}
+
+
+async function registerEntries(){
+
+  const items =
+  selectedItems();
+
+
+  if(!state.store){
+
+    alert(
+      "店舗を選択してください"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    items.length === 0
+  ){
+
+    alert(
+      "数量を入力してください"
+    );
+
+    return;
+
+  }
+
+
+  const batchId =
+  String(
+    Date.now()
+  );
+
+
+  const date =
+  document.getElementById(
+    "date"
+  ).value;
+
+
+  const entries =
+  items.map(
+    (
+      x,
+      index
+    )=>({
+
+      id:
+      batchId +
+      "-" +
+      index,
+
+      batchId,
+
+      date,
+
+      store:
+      state.store,
+
+      type:
+      state.type,
+
+      product:
+      x.product.name,
+
+      qty:
+      x.qty,
+
+      unitPrice:
+      state.type === "販売"
+      ? x.product.price
+      : "",
+
+      amount:
+      state.type === "販売"
+      ? x.product.price *
+        x.qty
+      : ""
+
+    })
+  );
+
+
+  setLoading(
+    true
+  );
+
+
+  try{
+
+
+    await requestAppsScript({
+
+      action:
+      "submit",
+
+      entries:
+      JSON.stringify(
+        entries
+      )
+
+    });
+
+
+    const history =
+    localHistory();
+
+
+    history.push({
+
+      batchId,
+
+      date,
+
+      store:
+      state.store,
+
+      type:
+      state.type,
+
+      items:
+      entries.map(
+        x=>({
+
+          product:
+          x.product,
+
+          qty:
+          x.qty
+
+        })
+      )
+
+    });
+
+
+    saveHistory(
+      history
+    );
+
+
+    state.quantities =
+    {};
+
+
+    dashboardData =
+    null;
+
+
+    dashboardLoadedAt =
+    0;
+
+
+    setLoading(
+      false
+    );
+
+
+    showToast(
+      "登録しました"
+    );
+
+
+    render();
+
+
+    setTimeout(
+      ()=>
+      loadDashboard(
+        true
+      ),
+      1200
+    );
+
+
+  }catch(err){
+
+
+    setLoading(
+      false
+    );
+
+
+    alert(
+      "登録できませんでした。通信状態を確認してください。"
+    );
+
+  }
+
+}
+
+
+async function undoLastBatch(){
+
+  const history =
+  localHistory();
+
+
+  if(
+    history.length === 0
+  ){
+
+    showToast(
+      "取消す登録がありません"
+    );
+
+    return;
+
+  }
+
+
+  const batch =
+  history[
+    history.length - 1
+  ];
+
+
+  const text =
+  batch.items
+  .map(
+    x=>
+    x.product +
+    " × " +
+    x.qty
+  )
+  .join("\n");
+
+
+  if(
+    !confirm(
+      "直前の登録を取消しますか？\n\n" +
+      text
+    )
+  ){
+
+    return;
+
+  }
+
+
+  setLoading(
+    true
+  );
+
+
+  try{
+
+
+    await requestAppsScript({
+
+      action:
+      "undo",
+
+      batchId:
+      batch.batchId
+
+    });
+
+
+    history.pop();
+
+
+    saveHistory(
+      history
+    );
+
+
+    dashboardData =
+    null;
+
+
+    dashboardLoadedAt =
+    0;
+
+
+    setLoading(
+      false
+    );
+
+
+    showToast(
+      "取消しました"
+    );
+
+
+    render();
+
+
+  }catch(err){
+
+
+    setLoading(
+      false
+    );
+
+
+    alert(
+      "取消できませんでした。"
+    );
+
+  }
+
+}
+
+
+function drawHistory(){
+
+  const box =
+  document.getElementById(
+    "history"
+  );
+
+
+  const history =
+  localHistory()
+  .slice(
+    -5
+  )
+  .reverse();
+
+
+  if(
+    history.length === 0
+  ){
+
+    box.innerHTML =
+    '<div class="note">まだ登録はありません。</div>';
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+  history.map(
+    batch=>{
+
+
+      const total =
+      batch.items
+      .reduce(
+        (
+          sum,
+          x
+        )=>
+        sum +
+        x.qty,
+        0
+      );
+
+
+      return `
+
+        <div class="history-row">
+
+          <div>
+
+            <b>
+              ${batch.type}
+            </b>
+
+            ${batch.items.length}商品
+
+            <br>
+
+            ${batch.date}
+
+            ・
+
+            ${batch.store}
+
+          </div>
+
+          <div>
+
+            ${total}個
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+  ).join("");
+
+}
+
+
+function showToast(msg){
+
+  const t =
+  document.getElementById(
+    "toast"
+  );
+
+
+  t.textContent =
+  msg;
+
+
+  t.style.display =
+  "block";
+
+
+  setTimeout(
+    ()=>
+    t.style.display =
+    "none",
+    1700
+  );
+
+}
+
+
+function setLoading(value){
+
+  document
+  .getElementById(
+    "app"
+  )
+  .classList
+  .toggle(
+    "loading",
+    value
+  );
+
+}
+
+
+
+/* ダッシュボード */
+
+let dashboardData =
+null;
+
+let dashboardLoading =
+false;
+
+let dashboardLoadedAt =
+0;
+
+
+function switchView(view){
+
+  document
+  .querySelectorAll(
+    ".app-view"
+  )
+  .forEach(el=>{
+
+    el.classList.toggle(
+      "active",
+      el.id ===
+      "view-" +
+      view
+    );
+
+  });
+
+
+  document
+  .querySelectorAll(
+    ".top-tab"
+  )
+  .forEach(btn=>{
+
+    btn.classList.toggle(
+      "active",
+      btn.dataset.view ===
+      view
+    );
+
+  });
+
+
+  if(
+    view !== "input"
+  ){
+
+    loadDashboard(
+      true
+    );
+
+  }
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+function loadDashboard(force){
+
+  if(
+    dashboardLoading
+  )
+  return;
+
+
+  dashboardLoading =
+  true;
+
+
+  const callbackName =
+
+  "__tomsDashboard_" +
+
+  Date.now();
+
+
+  const script =
+  document.createElement(
+    "script"
+  );
+
+
+  let finished =
+  false;
+
+
+  const cleanup =
+  ()=>{
+
+    try{
+
+      delete window[
+        callbackName
+      ];
+
+    }catch(e){}
+
+
+    if(
+      script.parentNode
+    ){
+
+      script.parentNode
+      .removeChild(
+        script
+      );
+
+    }
+
+  };
+
+
+  const timer =
+  setTimeout(
+    ()=>{
+
+      if(finished)
+      return;
+
+
+      finished =
+      true;
+
+
+      dashboardLoading =
+      false;
+
+
+      cleanup();
+
+    },
+    15000
+  );
+
+
+  window[
+    callbackName
+  ] =
+  data=>{
+
+
+    if(finished)
+    return;
+
+
+    finished =
+    true;
+
+
+    clearTimeout(
+      timer
+    );
+
+
+    dashboardLoading =
+    false;
+
+
+    cleanup();
+
+
+    if(
+      !data ||
+      data.ok === false
+    ){
+
+      return;
+
+    }
+
+
+    dashboardData =
+    data;
+
+
+    dashboardLoadedAt =
+    Date.now();
+
+
+    setupProductMonthOptions();
+
+
+    renderAllDashboard();
+
+  };
+
+
+  script.src =
+
+  API_URL +
+
+  "?mode=dashboard" +
+
+  "&callback=" +
+
+  encodeURIComponent(
+    callbackName
+  ) +
+
+  "&t=" +
+
+  Date.now();
+
+
+  document.head
+  .appendChild(
+    script
+  );
+
+}
+
+
+function renderAllDashboard(){
+
+  if(
+    !dashboardData
+  )
+  return;
+
+
+  renderInventory();
+
+  renderMonthly();
+
+  renderProductMonthly();
+
+
+  const text =
+
+  dashboardData.lastUpdated
+
+  ? "最終登録：" +
+    dashboardData.lastUpdated
+
+  : "";
+
+
+  [
+    "inventoryUpdated",
+    "monthlyUpdated",
+    "productsUpdated"
+  ]
+  .forEach(id=>{
+
+    document
+    .getElementById(
+      id
+    )
+    .textContent =
+    text;
+
+  });
+
+}
+
+
+function setupProductMonthOptions(){
+
+  if(
+    !dashboardData
+  )
+  return;
+
+
+  const select =
+  document.getElementById(
+    "productMonth"
+  );
+
+
+  const today =
+  localToday()
+  .slice(
+    0,
+    7
+  );
+
+
+  select.innerHTML =
+  dashboardData.months
+  .map(
+    m=>
+    `<option value="${m.key}">
+      ${m.label}
+    </option>`
+  )
+  .join("");
+
+
+  if(
+    dashboardData.months
+    .some(
+      m=>
+      m.key === today
+    )
+  ){
+
+    select.value =
+    today;
+
+  }
+
+}
+
+
+function renderInventory(){
+
+  if(
+    !dashboardData
+  )
+  return;
+
+
+  const store =
+  document.getElementById(
+    "inventoryStore"
+  ).value;
+
+
+  const rows =
+
+  dashboardData.inventory[
+    store
+  ] || [];
+
+
+  const box =
+  document.getElementById(
+    "inventoryContent"
+  );
+
+
+  box.innerHTML = `
+
+    <div class="dash-table-wrap">
+
+      <table
+        class="dash-table inventory-table inventory-only-stock"
+      >
+
+        <thead>
+          <tr>
+            <th>商品名</th>
+            <th>在庫</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${rows.map(
+            r=>`
+
+              <tr>
+
+                <td>
+                  ${r.product}
+                </td>
+
+                <td>
+                  ${r.stock}個
+                </td>
+
+              </tr>
+
+            `
+          ).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+function renderMonthly(){
+
+  if(
+    !dashboardData
+  )
+  return;
+
+
+  const store =
+  document.getElementById(
+    "monthlyStore"
+  ).value;
+
+
+  const rows =
+
+  dashboardData.monthly[
+    store
+  ] || [];
+
+
+  const box =
+  document.getElementById(
+    "monthlyContent"
+  );
+
+
+  box.innerHTML = `
+
+    <div class="month-list">
+
+      ${rows.map(
+        r=>`
+
+          <div class="month-row">
+
+            <div class="m">
+              ${r.label}
+            </div>
+
+            <div class="v">
+              ${r.qty}個
+            </div>
+
+            <div class="v">
+              ${yen(r.amount)}
+            </div>
+
+          </div>
+
+        `
+      ).join("")}
+
+    </div>
+
+  `;
+
+}
+
+
+function renderProductMonthly(){
+
+  if(
+    !dashboardData
+  )
+  return;
+
+
+  const store =
+  document.getElementById(
+    "productStore"
+  ).value;
+
+
+  const month =
+  document.getElementById(
+    "productMonth"
+  ).value;
+
+
+  const rows =
+
+  (
+    dashboardData
+    .productMonthly[
+      store
+    ] || {}
+  )[month] || [];
+
+
+  const sold =
+  rows.filter(
+    r=>
+    Number(
+      r.qty
+    ) > 0
+  );
+
+
+  const box =
+  document.getElementById(
+    "productsContent"
+  );
+
+
+  const priceMap = {};
+
+
+  Object.values(
+    STORE_PRODUCTS
+  )
+  .forEach(products=>{
+
+    products.forEach(p=>{
+
+      if(
+        priceMap[p.name] == null
+      ){
+
+        priceMap[p.name] =
+        p.price;
+
+      }
+
+    });
+
+  });
+
+
+  const detailRows =
+  sold.map(r=>{
+
+    const qty =
+    Number(
+      r.qty || 0
+    );
+
+
+    const price =
+    Number(
+      priceMap[
+        r.product
+      ] || 0
+    );
+
+
+    return {
+      product:
+      r.product,
+
+      qty,
+
+      amount:
+      qty *
+      price
+    };
+
+  });
+
+
+  const totalQty =
+  detailRows.reduce(
+    (sum,r)=>
+    sum + r.qty,
+    0
+  );
+
+
+  const totalAmount =
+  detailRows.reduce(
+    (sum,r)=>
+    sum + r.amount,
+    0
+  );
+
+
+  box.innerHTML = `
+
+    <div
+      class="metric"
+      style="margin-bottom:10px"
+    >
+      <div class="metric-label">
+        販売個数 合計
+      </div>
+
+      <div class="metric-value">
+        ${totalQty}個
+      </div>
+    </div>
+
+
+    <div
+      class="metric"
+      style="margin-bottom:10px"
+    >
+      <div class="metric-label">
+        売上金額 合計
+      </div>
+
+      <div class="metric-value">
+        ${yen(totalAmount)}
+      </div>
+    </div>
+
+
+    <div class="dash-table-wrap">
+
+      <table
+        class="dash-table"
+        style="min-width:0"
+      >
+
+        <thead>
+          <tr>
+            <th>商品名</th>
+            <th>販売個数</th>
+            <th>売上金額</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${detailRows.map(
+            r=>`
+
+              <tr>
+
+                <td>
+                  ${r.product}
+                </td>
+
+                <td>
+                  ${r.qty}個
+                </td>
+
+                <td>
+                  ${yen(r.amount)}
+                </td>
+
+              </tr>
+
+            `
+          ).join("")}
+
+
+          <tr>
+
+            <td>
+              <b>合計</b>
+            </td>
+
+            <td>
+              <b>${totalQty}個</b>
+            </td>
+
+            <td>
+              <b>${yen(totalAmount)}</b>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+window.setType =
+setType;
+
+window.registerEntries =
+registerEntries;
+
+window.undoLastBatch =
+undoLastBatch;
+
+window.switchView =
+switchView;
+
+window.loadDashboard =
+loadDashboard;
+
+window.renderInventory =
+renderInventory;
+
+window.renderMonthly =
+renderMonthly;
+
+window.renderProductMonthly =
+renderProductMonthly;
+
+
+render();
+
 </script>
 
 </body>
