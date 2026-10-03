@@ -193,12 +193,7 @@
       flex:0 0 38px;
     }
 
-    .sale.active {
-      border-color:var(--orange);
-      background:linear-gradient(145deg,#fff5e8,#f4dfc5);
-      color:#9c591f;
-    }
-
+    .sale.active,
     .delivery.active {
       border-color:var(--blue);
       background:linear-gradient(145deg,#edf5f2,#dce9e5);
@@ -725,7 +720,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v16</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v17</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
