@@ -647,14 +647,76 @@
 
 <body>
 
-<div id="resultModal" class="result-modal" role="dialog" aria-modal="true" aria-labelledby="resultMessage">
-  <div class="result-card">
-    <div id="resultMessage" class="result-message">登録しました</div>
-    <button id="resultCheckButton" type="button" class="result-check" aria-label="閉じる" onclick="hideResultModal()">
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M14 33.5 26.5 46 50 19"
-          fill="none" stroke="#ffffff" stroke-width="8"
-          stroke-linecap="round" stroke-linejoin="round"/>
+<div
+  id="resultModal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="resultMessage"
+  style="
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:rgba(40,28,20,.34);
+    backdrop-filter:blur(3px);
+  "
+>
+  <div
+    style="
+      width:min(86vw,360px);
+      padding:32px 24px 26px;
+      border:1px solid rgba(103,67,42,.22);
+      border-radius:24px;
+      background:#fffaf1;
+      box-shadow:0 18px 46px rgba(50,32,20,.34);
+      text-align:center;
+    "
+  >
+    <div
+      id="resultMessage"
+      style="
+        margin-bottom:24px;
+        color:#4b3020;
+        font-size:26px;
+        font-weight:900;
+        line-height:1.4;
+      "
+    >
+      登録しました
+    </div>
+
+    <button
+      id="resultCheckButton"
+      type="button"
+      aria-label="閉じる"
+      onclick="hideResultModal()"
+      style="
+        width:104px;
+        height:104px;
+        margin:0 auto;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border:0;
+        border-radius:50%;
+        background:#42b447;
+        box-shadow:0 6px 18px rgba(43,115,48,.28);
+        cursor:pointer;
+        -webkit-tap-highlight-color:transparent;
+      "
+    >
+      <svg viewBox="0 0 64 64" aria-hidden="true" style="width:64px;height:64px;">
+        <path
+          d="M14 33.5 26.5 46 50 19"
+          fill="none"
+          stroke="#ffffff"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </button>
   </div>
@@ -663,7 +725,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります</div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v16</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -1349,8 +1411,10 @@
     const modal = document.getElementById("resultModal");
     const message = document.getElementById("resultMessage");
 
+    if(!modal || !message) return;
+
     message.textContent = msg;
-    modal.classList.add("show");
+    modal.style.display = "flex";
 
     setTimeout(()=>{
       const btn = document.getElementById("resultCheckButton");
@@ -1360,7 +1424,9 @@
 
   function hideResultModal(){
     const modal = document.getElementById("resultModal");
-    modal.classList.remove("show");
+    if(modal){
+      modal.style.display = "none";
+    }
   }
 
   function setLoading(v){
