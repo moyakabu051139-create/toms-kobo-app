@@ -508,11 +508,11 @@
 
     .product-image-wrap{
       width:72px;
-      height:34px;
+      height:42px;
       margin:4px 0 5px;
       display:flex;
       align-items:center;
-      justify-content:flex-start;
+      justify-content:center;
       overflow:hidden;
       border-radius:6px;
       background:#fffdf8;
@@ -522,8 +522,10 @@
     .product-image{
       width:100%;
       height:100%;
-      object-fit:cover;
+      object-fit:contain;
+      object-position:center;
       display:block;
+      background:#fffdf8;
     }
 
     .product-price{
@@ -747,7 +749,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v28</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v29</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
