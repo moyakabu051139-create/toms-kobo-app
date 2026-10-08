@@ -666,6 +666,103 @@
       }
     }
 
+
+    /* ===== 月別：スマホ向けカード表示 ===== */
+    .monthly-cards{
+      display:grid;
+      gap:12px;
+    }
+
+    .monthly-card{
+      padding:14px;
+      border:1px solid #d8bea0;
+      border-radius:14px;
+      background:#fffaf2;
+      box-shadow:0 2px 6px rgba(75,48,32,.06);
+    }
+
+    .monthly-card-title{
+      margin-bottom:10px;
+      color:#4b3020;
+      font-size:20px;
+      font-weight:900;
+      text-align:left;
+    }
+
+    .monthly-metrics{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+    }
+
+    .monthly-metric{
+      padding:10px 9px;
+      border:1px solid #ead8c2;
+      border-radius:10px;
+      background:#fffdf8;
+      min-width:0;
+    }
+
+    .monthly-metric-label{
+      margin-bottom:3px;
+      color:#80634c;
+      font-size:11px;
+      font-weight:800;
+      line-height:1.3;
+    }
+
+    .monthly-metric-value{
+      color:#4b3020;
+      font-size:17px;
+      font-weight:900;
+      line-height:1.25;
+      word-break:keep-all;
+    }
+
+    .monthly-metric-final{
+      grid-column:1 / -1;
+      background:#f3e3ce;
+      border-color:#c7a47c;
+    }
+
+    .monthly-metric-final .monthly-metric-label{
+      font-size:12px;
+    }
+
+    .monthly-metric-final .monthly-metric-value{
+      font-size:22px;
+    }
+
+    .monthly-note{
+      margin:0 0 10px;
+      padding:10px 12px;
+      border:1px solid #d8bea0;
+      border-radius:10px;
+      background:#fffaf2;
+      color:#735e4d;
+      font-size:12px;
+      line-height:1.55;
+      font-weight:700;
+    }
+
+    @media(max-width:390px){
+      .monthly-card{
+        padding:12px;
+      }
+
+      .monthly-card-title{
+        font-size:19px;
+      }
+
+      .monthly-metric-value{
+        font-size:16px;
+      }
+
+      .monthly-metric-final .monthly-metric-value{
+        font-size:21px;
+      }
+    }
+
 </style>
 </head>
 
@@ -749,7 +846,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v31</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v32</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -1590,12 +1687,19 @@
       if(store === "南城市地域物産館"){
         return Math.round(Number(amount || 0) * 0.70);
       }
+
       if(store === "南の駅やえせ"){
         return Math.round(Number(amount || 0) * 0.80);
       }
+
       if(store === "全店舗"){
-        const nanjoRows = (dashboardData.monthly && dashboardData.monthly["南城市地域物産館"]) || [];
-        const yaeseRows = (dashboardData.monthly && dashboardData.monthly["南の駅やえせ"]) || [];
+        const nanjoRows =
+          (dashboardData.monthly &&
+           dashboardData.monthly["南城市地域物産館"]) || [];
+
+        const yaeseRows =
+          (dashboardData.monthly &&
+           dashboardData.monthly["南の駅やえせ"]) || [];
 
         const nanjo = nanjoRows.find(r => r.key === monthKey);
         const yaese = yaeseRows.find(r => r.key === monthKey);
@@ -1608,6 +1712,7 @@
           yaeseAmount * 0.80
         );
       }
+
       return 0;
     }
 
@@ -1626,89 +1731,152 @@
 
       productRows.forEach(r=>{
         const qty = Number(r.qty || 0);
+
         if(qty <= 0) return;
 
         if(Object.prototype.hasOwnProperty.call(PRODUCT_COSTS, r.product)){
           totalCost += qty * Number(PRODUCT_COSTS[r.product] || 0);
         }else{
           unknownQty += qty;
+
           if(!unknownProducts.includes(r.product)){
             unknownProducts.push(r.product);
           }
         }
       });
 
-      return { totalCost, unknownQty, unknownProducts };
+      return {
+        totalCost,
+        unknownQty,
+        unknownProducts
+      };
     }
 
     function costForMonth(monthKey){
       if(store === "全店舗"){
-        const nanjo = costForStoreMonth("南城市地域物産館", monthKey);
-        const yaese = costForStoreMonth("南の駅やえせ", monthKey);
+        const nanjo =
+          costForStoreMonth(
+            "南城市地域物産館",
+            monthKey
+          );
+
+        const yaese =
+          costForStoreMonth(
+            "南の駅やえせ",
+            monthKey
+          );
 
         return {
-          totalCost: nanjo.totalCost + yaese.totalCost,
-          unknownQty: nanjo.unknownQty + yaese.unknownQty,
-          unknownProducts: [...new Set([...nanjo.unknownProducts, ...yaese.unknownProducts])]
+          totalCost:
+            nanjo.totalCost +
+            yaese.totalCost,
+
+          unknownQty:
+            nanjo.unknownQty +
+            yaese.unknownQty,
+
+          unknownProducts:
+            [
+              ...new Set([
+                ...nanjo.unknownProducts,
+                ...yaese.unknownProducts
+              ])
+            ]
         };
       }
 
-      return costForStoreMonth(store, monthKey);
+      return costForStoreMonth(
+        store,
+        monthKey
+      );
     }
 
     box.innerHTML = `
-      <div
-        style="
-          margin:0 0 10px;
-          padding:10px 12px;
-          border:1px solid #d8bea0;
-          border-radius:10px;
-          background:#fffaf2;
-          color:#735e4d;
-          font-size:12px;
-          line-height:1.55;
-          font-weight:700;
-        "
-      >
+      <div class="monthly-note">
         手数料差引後＝売上－委託販売手数料<br>
         最終粗利＝売上－委託販売手数料－原価<br>
         南城市：手数料30％ ／ 南の駅やえせ：20％<br>
         ※「魔除けのサン付y2k」「魔除けのサン付ストラップ」
         「パラコード部活ストラップ」は原価未登録です。
-        これらが売れた月の最終粗利は暫定値になります。
       </div>
 
-      <div
-        class="month-row"
-        style="
-          background:#ead4b5;
-          font-size:10px;
-          font-weight:900;
-        "
-      >
-        <div>月</div>
-        <div style="text-align:right">販売</div>
-        <div style="text-align:right">売上</div>
-        <div style="text-align:right">手数料後</div>
-        <div style="text-align:right">原価</div>
-        <div style="text-align:right">最終粗利</div>
-      </div>
-
-      <div class="month-list">
+      <div class="monthly-cards">
         ${rows.map(r=>{
-          const commissionProfit = afterCommission(r.key, r.amount);
-          const costInfo = costForMonth(r.key);
-          const finalProfit = commissionProfit - costInfo.totalCost;
-          const provisionalMark = costInfo.unknownQty > 0 ? "※" : "";
+          const commissionProfit =
+            afterCommission(
+              r.key,
+              r.amount
+            );
+
+          const costInfo =
+            costForMonth(
+              r.key
+            );
+
+          const finalProfit =
+            commissionProfit -
+            costInfo.totalCost;
+
+          const provisionalMark =
+            costInfo.unknownQty > 0
+            ? " ※"
+            : "";
 
           return `
-            <div class="month-row">
-              <div class="m">${escapeHtml(r.label)}</div>
-              <div class="v">${num(r.qty)}個</div>
-              <div class="v">${yen(r.amount)}</div>
-              <div class="v">${yen(commissionProfit)}</div>
-              <div class="v">${yen(costInfo.totalCost)}</div>
-              <div class="v">${yen(finalProfit)}${provisionalMark}</div>
+            <div class="monthly-card">
+
+              <div class="monthly-card-title">
+                ${escapeHtml(r.label)}
+              </div>
+
+              <div class="monthly-metrics">
+
+                <div class="monthly-metric">
+                  <div class="monthly-metric-label">
+                    販売個数
+                  </div>
+                  <div class="monthly-metric-value">
+                    ${num(r.qty)}個
+                  </div>
+                </div>
+
+                <div class="monthly-metric">
+                  <div class="monthly-metric-label">
+                    売上
+                  </div>
+                  <div class="monthly-metric-value">
+                    ${yen(r.amount)}
+                  </div>
+                </div>
+
+                <div class="monthly-metric">
+                  <div class="monthly-metric-label">
+                    手数料差引後
+                  </div>
+                  <div class="monthly-metric-value">
+                    ${yen(commissionProfit)}
+                  </div>
+                </div>
+
+                <div class="monthly-metric">
+                  <div class="monthly-metric-label">
+                    原価
+                  </div>
+                  <div class="monthly-metric-value">
+                    ${yen(costInfo.totalCost)}
+                  </div>
+                </div>
+
+                <div class="monthly-metric monthly-metric-final">
+                  <div class="monthly-metric-label">
+                    最終粗利
+                  </div>
+                  <div class="monthly-metric-value">
+                    ${yen(finalProfit)}${provisionalMark}
+                  </div>
+                </div>
+
+              </div>
             </div>
           `;
         }).join("")}
