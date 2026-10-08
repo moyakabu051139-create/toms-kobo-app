@@ -763,6 +763,24 @@
       }
     }
 
+
+    /* ===== 在庫3個以下を強調 ===== */
+    .inventory-low-stock{
+      background:#fff1e8 !important;
+    }
+
+    .inventory-low-stock td:first-child{
+      color:#a44739 !important;
+      font-weight:900 !important;
+    }
+
+    .inventory-low-stock td:nth-child(2){
+      color:#a44739 !important;
+      font-weight:900 !important;
+      background:#ffe2d3 !important;
+      border-radius:8px;
+    }
+
 </style>
 </head>
 
@@ -846,7 +864,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v32</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v33</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -1647,6 +1665,7 @@
 
   function renderInventory(){
     const box = document.getElementById("inventoryContent");
+
     if(!dashboardData){
       box.innerHTML = '<div class="dash-loading">読み込み中…</div>';
       return;
@@ -1655,19 +1674,42 @@
     const store = document.getElementById("inventoryStore").value;
     const rows = (dashboardData.inventory && dashboardData.inventory[store]) || [];
 
-    const tableRows = rows.map(r=>`
-      <tr>
-        <td>${escapeHtml(r.product)}</td>
-        <td class="${Number(r.stock)<0?'stock-minus':''}">${num(r.stock)}個</td>
-      </tr>
-    `).join("");
+    const tableRows = rows.map(r=>{
+      const stock = Number(r.stock || 0);
+      const lowStock = stock <= 3;
+
+      return `
+        <tr class="${lowStock ? 'inventory-low-stock' : ''}">
+          <td>${escapeHtml(r.product)}</td>
+          <td>${num(stock)}個</td>
+        </tr>
+      `;
+    }).join("");
 
     box.innerHTML = `
       <div class="dash-table-wrap inventory-wrap">
         <table class="dash-table inventory-table inventory-only-stock">
-          <thead><tr><th>商品名</th><th>在庫</th></tr></thead>
-          <tbody>${tableRows || '<tr><td colspan="2">データなし</td></tr>'}</tbody>
+          <thead>
+            <tr>
+              <th>商品名</th>
+              <th>在庫</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows || '<tr><td colspan="2">データなし</td></tr>'}
+          </tbody>
         </table>
+      </div>
+
+      <div
+        style="
+          margin-top:8px;
+          color:#8a6547;
+          font-size:11px;
+          font-weight:700;
+        "
+      >
+        在庫3個以下の商品は赤色で表示します。
       </div>
     `;
   }
