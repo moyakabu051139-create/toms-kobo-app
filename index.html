@@ -560,10 +560,10 @@
     .dash-table th,.dash-table td{padding:10px 8px;border-bottom:1px solid #ead8c2;text-align:right;white-space:nowrap}
     .dash-table th{background:#ead4b5;color:#4b3020;font-weight:900}.dash-table th:first-child,.dash-table td:first-child{text-align:left;white-space:normal;min-width:180px}.dash-table tr:last-child td{border-bottom:0}
     .stock-minus{color:#a44739;font-weight:900}.month-list{display:grid;gap:8px}
-    .month-row{display:grid;grid-template-columns:72px .8fr 1fr 1fr;gap:8px;align-items:center;padding:11px 10px;border:1px solid #d8bea0;border-radius:11px;background:#fffaf2}
+    .month-row{display:grid;grid-template-columns:58px .65fr .9fr .9fr .85fr .95fr;gap:8px;align-items:center;padding:11px 10px;border:1px solid #d8bea0;border-radius:11px;background:#fffaf2}
     .month-row .m{font-weight:900;color:#4b3020}.month-row .v{text-align:right;font-weight:900}
     .dash-loading,.dash-empty{padding:26px 10px;text-align:center;color:#735e4d;font-weight:800;line-height:1.6}
-    @media(max-width:390px){.top-tab{font-size:12px}.month-row{grid-template-columns:64px .75fr 1fr 1fr;font-size:13px}}
+    @media(max-width:390px){.top-tab{font-size:12px}.month-row{grid-template-columns:52px .6fr .85fr .85fr .8fr .9fr;font-size:13px}}
 
 
     /* ===== 在庫一覧：スマホ縦画面向け最適化 ===== */
@@ -749,7 +749,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v30</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v31</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -947,6 +947,31 @@
     "シーちゃんマグ やえせシーちゃん":"./shichan_mug_yaese.png",
     "シーちゃんマグ 海と特産品":"./shichan_mug_sea_products.png",
     "シーちゃんマグ めんそーれ":"./shichan_mug_mensore.png"
+  };
+
+  const PRODUCT_COSTS = {
+    "美らサンドグラス":183,
+    "美らサンドタンブラー黒":550,
+    "美らサンドタンブラー白":550,
+    "美らタンブラー2個":1100,
+    "タンブラー白ハイビ柄":550,
+    "タンブラー黒ハイビ柄":550,
+    "タンブラー ハイビ柄2個":1100,
+    "ランチボックス カーキー":437,
+    "ランチボックス オレンジ":437,
+    "コルクコースター 1個":28,
+    "コルクコースター 2個セット":56,
+    "沖縄ストラップS":100,
+    "沖縄ストラップM":150,
+    "島ぞうり":500,
+    "ワンポイント島ぞうり":500,
+    "シーちゃんコースターA":28,
+    "シーちゃんコースターB":28,
+    "シーちゃんコースターC":28,
+    "シーちゃんマグ やえせシーちゃん":457,
+    "シーちゃんマグ 海と特産品":457,
+    "シーちゃんマグ めんそーれ":457,
+    "シーちゃん願い事チャーム":130
   };
 
   const STORE_PRODUCTS = {
@@ -1561,44 +1586,74 @@
     const store = document.getElementById("monthlyStore").value;
     const rows = (dashboardData.monthly && dashboardData.monthly[store]) || [];
 
-    function provisionalGrossProfit(monthKey, amount){
-
+    function afterCommission(monthKey, amount){
       if(store === "南城市地域物産館"){
         return Math.round(Number(amount || 0) * 0.70);
       }
-
       if(store === "南の駅やえせ"){
         return Math.round(Number(amount || 0) * 0.80);
       }
-
       if(store === "全店舗"){
-        const nanjoRows =
-          (dashboardData.monthly &&
-           dashboardData.monthly["南城市地域物産館"]) || [];
+        const nanjoRows = (dashboardData.monthly && dashboardData.monthly["南城市地域物産館"]) || [];
+        const yaeseRows = (dashboardData.monthly && dashboardData.monthly["南の駅やえせ"]) || [];
 
-        const yaeseRows =
-          (dashboardData.monthly &&
-           dashboardData.monthly["南の駅やえせ"]) || [];
+        const nanjo = nanjoRows.find(r => r.key === monthKey);
+        const yaese = yaeseRows.find(r => r.key === monthKey);
 
-        const nanjo =
-          nanjoRows.find(r => r.key === monthKey);
-
-        const yaese =
-          yaeseRows.find(r => r.key === monthKey);
-
-        const nanjoAmount =
-          Number(nanjo ? nanjo.amount : 0);
-
-        const yaeseAmount =
-          Number(yaese ? yaese.amount : 0);
+        const nanjoAmount = Number(nanjo ? nanjo.amount : 0);
+        const yaeseAmount = Number(yaese ? yaese.amount : 0);
 
         return Math.round(
           nanjoAmount * 0.70 +
           yaeseAmount * 0.80
         );
       }
-
       return 0;
+    }
+
+    function costForStoreMonth(targetStore, monthKey){
+      const monthData =
+        (
+          dashboardData.productMonthly &&
+          dashboardData.productMonthly[targetStore]
+        ) || {};
+
+      const productRows = monthData[monthKey] || [];
+
+      let totalCost = 0;
+      let unknownQty = 0;
+      const unknownProducts = [];
+
+      productRows.forEach(r=>{
+        const qty = Number(r.qty || 0);
+        if(qty <= 0) return;
+
+        if(Object.prototype.hasOwnProperty.call(PRODUCT_COSTS, r.product)){
+          totalCost += qty * Number(PRODUCT_COSTS[r.product] || 0);
+        }else{
+          unknownQty += qty;
+          if(!unknownProducts.includes(r.product)){
+            unknownProducts.push(r.product);
+          }
+        }
+      });
+
+      return { totalCost, unknownQty, unknownProducts };
+    }
+
+    function costForMonth(monthKey){
+      if(store === "全店舗"){
+        const nanjo = costForStoreMonth("南城市地域物産館", monthKey);
+        const yaese = costForStoreMonth("南の駅やえせ", monthKey);
+
+        return {
+          totalCost: nanjo.totalCost + yaese.totalCost,
+          unknownQty: nanjo.unknownQty + yaese.unknownQty,
+          unknownProducts: [...new Set([...nanjo.unknownProducts, ...yaese.unknownProducts])]
+        };
+      }
+
+      return costForStoreMonth(store, monthKey);
     }
 
     box.innerHTML = `
@@ -1611,46 +1666,64 @@
           background:#fffaf2;
           color:#735e4d;
           font-size:12px;
-          line-height:1.5;
+          line-height:1.55;
           font-weight:700;
         "
       >
-        粗利＝売上－委託販売手数料
-        （南城市30％・南の駅やえせ20％）
-        ※原価はまだ差し引いていません
+        手数料差引後＝売上－委託販売手数料<br>
+        最終粗利＝売上－委託販売手数料－原価<br>
+        南城市：手数料30％ ／ 南の駅やえせ：20％<br>
+        ※「魔除けのサン付y2k」「魔除けのサン付ストラップ」
+        「パラコード部活ストラップ」は原価未登録です。
+        これらが売れた月の最終粗利は暫定値になります。
       </div>
 
       <div
         class="month-row"
         style="
           background:#ead4b5;
-          font-size:12px;
+          font-size:10px;
           font-weight:900;
         "
       >
         <div>月</div>
         <div style="text-align:right">販売</div>
         <div style="text-align:right">売上</div>
-        <div style="text-align:right">粗利</div>
+        <div style="text-align:right">手数料後</div>
+        <div style="text-align:right">原価</div>
+        <div style="text-align:right">最終粗利</div>
       </div>
 
       <div class="month-list">
         ${rows.map(r=>{
-          const grossProfit =
-            provisionalGrossProfit(
-              r.key,
-              r.amount
-            );
+          const commissionProfit = afterCommission(r.key, r.amount);
+          const costInfo = costForMonth(r.key);
+          const finalProfit = commissionProfit - costInfo.totalCost;
+          const provisionalMark = costInfo.unknownQty > 0 ? "※" : "";
 
           return `
             <div class="month-row">
               <div class="m">${escapeHtml(r.label)}</div>
               <div class="v">${num(r.qty)}個</div>
               <div class="v">${yen(r.amount)}</div>
-              <div class="v">${yen(grossProfit)}</div>
+              <div class="v">${yen(commissionProfit)}</div>
+              <div class="v">${yen(costInfo.totalCost)}</div>
+              <div class="v">${yen(finalProfit)}${provisionalMark}</div>
             </div>
           `;
         }).join("")}
+      </div>
+
+      <div
+        style="
+          margin-top:8px;
+          color:#8a6547;
+          font-size:11px;
+          line-height:1.5;
+          font-weight:700;
+        "
+      >
+        ※印は、原価未登録の商品がその月に販売されているため暫定値です。
       </div>
     `;
   }
