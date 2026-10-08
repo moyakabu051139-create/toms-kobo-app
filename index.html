@@ -560,10 +560,10 @@
     .dash-table th,.dash-table td{padding:10px 8px;border-bottom:1px solid #ead8c2;text-align:right;white-space:nowrap}
     .dash-table th{background:#ead4b5;color:#4b3020;font-weight:900}.dash-table th:first-child,.dash-table td:first-child{text-align:left;white-space:normal;min-width:180px}.dash-table tr:last-child td{border-bottom:0}
     .stock-minus{color:#a44739;font-weight:900}.month-list{display:grid;gap:8px}
-    .month-row{display:grid;grid-template-columns:88px 1fr 1fr;gap:8px;align-items:center;padding:11px 10px;border:1px solid #d8bea0;border-radius:11px;background:#fffaf2}
+    .month-row{display:grid;grid-template-columns:72px .8fr 1fr 1fr;gap:8px;align-items:center;padding:11px 10px;border:1px solid #d8bea0;border-radius:11px;background:#fffaf2}
     .month-row .m{font-weight:900;color:#4b3020}.month-row .v{text-align:right;font-weight:900}
     .dash-loading,.dash-empty{padding:26px 10px;text-align:center;color:#735e4d;font-weight:800;line-height:1.6}
-    @media(max-width:390px){.top-tab{font-size:12px}.month-row{grid-template-columns:74px 1fr 1fr;font-size:13px}}
+    @media(max-width:390px){.top-tab{font-size:12px}.month-row{grid-template-columns:64px .75fr 1fr 1fr;font-size:13px}}
 
 
     /* ===== 在庫一覧：スマホ縦画面向け最適化 ===== */
@@ -749,7 +749,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v29</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v30</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -1552,6 +1552,7 @@
 
   function renderMonthly(){
     const box = document.getElementById("monthlyContent");
+
     if(!dashboardData){
       box.innerHTML = '<div class="dash-loading">読み込み中…</div>';
       return;
@@ -1560,15 +1561,96 @@
     const store = document.getElementById("monthlyStore").value;
     const rows = (dashboardData.monthly && dashboardData.monthly[store]) || [];
 
+    function provisionalGrossProfit(monthKey, amount){
+
+      if(store === "南城市地域物産館"){
+        return Math.round(Number(amount || 0) * 0.70);
+      }
+
+      if(store === "南の駅やえせ"){
+        return Math.round(Number(amount || 0) * 0.80);
+      }
+
+      if(store === "全店舗"){
+        const nanjoRows =
+          (dashboardData.monthly &&
+           dashboardData.monthly["南城市地域物産館"]) || [];
+
+        const yaeseRows =
+          (dashboardData.monthly &&
+           dashboardData.monthly["南の駅やえせ"]) || [];
+
+        const nanjo =
+          nanjoRows.find(r => r.key === monthKey);
+
+        const yaese =
+          yaeseRows.find(r => r.key === monthKey);
+
+        const nanjoAmount =
+          Number(nanjo ? nanjo.amount : 0);
+
+        const yaeseAmount =
+          Number(yaese ? yaese.amount : 0);
+
+        return Math.round(
+          nanjoAmount * 0.70 +
+          yaeseAmount * 0.80
+        );
+      }
+
+      return 0;
+    }
+
     box.innerHTML = `
+      <div
+        style="
+          margin:0 0 10px;
+          padding:10px 12px;
+          border:1px solid #d8bea0;
+          border-radius:10px;
+          background:#fffaf2;
+          color:#735e4d;
+          font-size:12px;
+          line-height:1.5;
+          font-weight:700;
+        "
+      >
+        粗利＝売上－委託販売手数料
+        （南城市30％・南の駅やえせ20％）
+        ※原価はまだ差し引いていません
+      </div>
+
+      <div
+        class="month-row"
+        style="
+          background:#ead4b5;
+          font-size:12px;
+          font-weight:900;
+        "
+      >
+        <div>月</div>
+        <div style="text-align:right">販売</div>
+        <div style="text-align:right">売上</div>
+        <div style="text-align:right">粗利</div>
+      </div>
+
       <div class="month-list">
-        ${rows.map(r=>`
-          <div class="month-row">
-            <div class="m">${escapeHtml(r.label)}</div>
-            <div class="v">${num(r.qty)}個</div>
-            <div class="v">${yen(r.amount)}</div>
-          </div>
-        `).join("")}
+        ${rows.map(r=>{
+          const grossProfit =
+            provisionalGrossProfit(
+              r.key,
+              r.amount
+            );
+
+          return `
+            <div class="month-row">
+              <div class="m">${escapeHtml(r.label)}</div>
+              <div class="v">${num(r.qty)}個</div>
+              <div class="v">${yen(r.amount)}</div>
+              <div class="v">${yen(grossProfit)}</div>
+            </div>
+          `;
+        }).join("")}
       </div>
     `;
   }
