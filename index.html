@@ -781,6 +781,130 @@
       border-radius:8px;
     }
 
+
+    /* ===== 月別・最終粗利の内訳画面 ===== */
+    .monthly-profit-button{
+      width:100%;
+      border:0;
+      padding:0;
+      margin:0;
+      background:transparent;
+      color:inherit;
+      text-align:left;
+      cursor:pointer;
+      font:inherit;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .monthly-profit-button:active{
+      opacity:.72;
+    }
+
+    .monthly-profit-hint{
+      margin-top:4px;
+      color:#8a6547;
+      font-size:10px;
+      font-weight:800;
+    }
+
+    .monthly-detail{
+      display:none;
+    }
+
+    .monthly-detail.show{
+      display:block;
+    }
+
+    .monthly-list-hidden{
+      display:none !important;
+    }
+
+    .monthly-back{
+      min-height:46px;
+      padding:9px 14px;
+      border:1px solid #c7a47c;
+      border-radius:10px;
+      background:#fff8ef;
+      color:#4b3020;
+      font-size:15px;
+      font-weight:900;
+    }
+
+    .monthly-detail-title{
+      margin:14px 0 4px;
+      color:#4b3020;
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .monthly-detail-sub{
+      margin-bottom:12px;
+      color:#80634c;
+      font-size:12px;
+      font-weight:700;
+      line-height:1.5;
+    }
+
+    .monthly-detail-summary{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .monthly-detail-summary .monthly-metric{
+      min-width:0;
+    }
+
+    .monthly-detail-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+
+    .monthly-detail-table th,
+    .monthly-detail-table td{
+      padding:9px 6px;
+      border-bottom:1px solid #ead8c2;
+      vertical-align:top;
+    }
+
+    .monthly-detail-table th{
+      background:#ead4b5;
+      color:#4b3020;
+      font-size:10px;
+      font-weight:900;
+      text-align:right;
+      white-space:nowrap;
+    }
+
+    .monthly-detail-table th:first-child,
+    .monthly-detail-table td:first-child{
+      text-align:left;
+    }
+
+    .monthly-detail-table td:not(:first-child){
+      text-align:right;
+      white-space:nowrap;
+      font-weight:800;
+    }
+
+    .monthly-detail-unknown{
+      color:#a44739;
+      font-weight:900;
+    }
+
+    @media(max-width:390px){
+      .monthly-detail-table{
+        font-size:11px;
+      }
+
+      .monthly-detail-table th,
+      .monthly-detail-table td{
+        padding:8px 4px;
+      }
+    }
+
 </style>
 </head>
 
@@ -864,7 +988,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v33</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v35</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -1714,6 +1838,129 @@
     `;
   }
 
+
+  function getProductUnitPrice(storeName, productName){
+    const list = STORE_PRODUCTS[storeName] || [];
+    const hit = list.find(p => p.name === productName);
+    return hit ? Number(hit.price || 0) : 0;
+  }
+
+  function calcStoreSettlement(storeName, productName, qty){
+    const unitPrice = getProductUnitPrice(storeName, productName);
+    const sales = unitPrice * Number(qty || 0);
+
+    if(storeName === "南城市地域物産館"){
+      /*
+        インボイス未登録時の南城市地域物産館の明細に合わせた計算
+        税抜売上 ＝ 税込売上 ÷ 1.10
+        販売手数料（明細計算用）＝ 税抜売上 × 30%
+        8%相当額 ＝（税抜売上－販売手数料）× 8%
+        実際の入金ベース ＝ 税抜売上－販売手数料＋8%相当額
+
+        画面上の「販売手数料」は分かりやすく税込売上の30%、
+        「インボイス調整」は通常の70%入金との差額として表示する。
+      */
+      const taxExcludedSales = Math.round(sales / 1.10);
+      const statementFee = Math.round(taxExcludedSales * 0.30);
+      const afterStatementFee = taxExcludedSales - statementFee;
+      const deemedTax = Math.round(afterStatementFee * 0.08);
+      const payout = afterStatementFee + deemedTax;
+
+      const displayFee = Math.round(sales * 0.30);
+      const normalAfterFee = sales - displayFee;
+      const invoiceAdjustment = Math.max(0, normalAfterFee - payout);
+
+      return {
+        sales,
+        fee:displayFee,
+        invoiceAdjustment,
+        payout
+      };
+    }
+
+    if(storeName === "南の駅やえせ"){
+      const fee = Math.round(sales * 0.20);
+
+      return {
+        sales,
+        fee,
+        invoiceAdjustment:0,
+        payout:sales - fee
+      };
+    }
+
+    return {
+      sales,
+      fee:0,
+      invoiceAdjustment:0,
+      payout:sales
+    };
+  }
+
+  function settlementForStoreMonth(storeName, monthKey){
+    const monthData =
+      (
+        dashboardData.productMonthly &&
+        dashboardData.productMonthly[storeName]
+      ) || {};
+
+    const rows = monthData[monthKey] || [];
+
+    return rows.reduce(
+      (acc,r)=>{
+        const qty = Number(r.qty || 0);
+        if(qty <= 0) return acc;
+
+        const s = calcStoreSettlement(
+          storeName,
+          r.product,
+          qty
+        );
+
+        acc.sales += s.sales;
+        acc.fee += s.fee;
+        acc.invoiceAdjustment += s.invoiceAdjustment;
+        acc.payout += s.payout;
+
+        return acc;
+      },
+      {
+        sales:0,
+        fee:0,
+        invoiceAdjustment:0,
+        payout:0
+      }
+    );
+  }
+
+  function settlementForMonth(store, monthKey){
+    if(store === "全店舗"){
+      const nanjo = settlementForStoreMonth(
+        "南城市地域物産館",
+        monthKey
+      );
+
+      const yaese = settlementForStoreMonth(
+        "南の駅やえせ",
+        monthKey
+      );
+
+      return {
+        sales:nanjo.sales + yaese.sales,
+        fee:nanjo.fee + yaese.fee,
+        invoiceAdjustment:
+          nanjo.invoiceAdjustment +
+          yaese.invoiceAdjustment,
+        payout:nanjo.payout + yaese.payout
+      };
+    }
+
+    return settlementForStoreMonth(
+      store,
+      monthKey
+    );
+  }
+
   function renderMonthly(){
     const box = document.getElementById("monthlyContent");
 
@@ -1724,39 +1971,6 @@
 
     const store = document.getElementById("monthlyStore").value;
     const rows = (dashboardData.monthly && dashboardData.monthly[store]) || [];
-
-    function afterCommission(monthKey, amount){
-      if(store === "南城市地域物産館"){
-        return Math.round(Number(amount || 0) * 0.70);
-      }
-
-      if(store === "南の駅やえせ"){
-        return Math.round(Number(amount || 0) * 0.80);
-      }
-
-      if(store === "全店舗"){
-        const nanjoRows =
-          (dashboardData.monthly &&
-           dashboardData.monthly["南城市地域物産館"]) || [];
-
-        const yaeseRows =
-          (dashboardData.monthly &&
-           dashboardData.monthly["南の駅やえせ"]) || [];
-
-        const nanjo = nanjoRows.find(r => r.key === monthKey);
-        const yaese = yaeseRows.find(r => r.key === monthKey);
-
-        const nanjoAmount = Number(nanjo ? nanjo.amount : 0);
-        const yaeseAmount = Number(yaese ? yaese.amount : 0);
-
-        return Math.round(
-          nanjoAmount * 0.70 +
-          yaeseAmount * 0.80
-        );
-      }
-
-      return 0;
-    }
 
     function costForStoreMonth(targetStore, monthKey){
       const monthData =
@@ -1835,19 +2049,20 @@
 
     box.innerHTML = `
       <div class="monthly-note">
-        手数料差引後＝売上－委託販売手数料<br>
-        最終粗利＝売上－委託販売手数料－原価<br>
-        南城市：手数料30％ ／ 南の駅やえせ：20％<br>
+        最終粗利＝売上－販売手数料－インボイス調整－原価<br>
+        南城市：販売手数料30％＋インボイス未登録調整を反映<br>
+        南の駅やえせ：販売手数料20％（従来どおり）<br>
         ※「魔除けのサン付y2k」「魔除けのサン付ストラップ」
         「パラコード部活ストラップ」は原価未登録です。
       </div>
 
-      <div class="monthly-cards">
+      <div id="monthlyListArea">
+        <div class="monthly-cards">
         ${rows.map(r=>{
-          const commissionProfit =
-            afterCommission(
-              r.key,
-              r.amount
+          const settlement =
+            settlementForMonth(
+              store,
+              r.key
             );
 
           const costInfo =
@@ -1856,7 +2071,7 @@
             );
 
           const finalProfit =
-            commissionProfit -
+            settlement.payout -
             costInfo.totalCost;
 
           const provisionalMark =
@@ -1893,10 +2108,10 @@
 
                 <div class="monthly-metric">
                   <div class="monthly-metric-label">
-                    手数料差引後
+                    手数料等差引後
                   </div>
                   <div class="monthly-metric-value">
-                    ${yen(commissionProfit)}
+                    ${yen(settlement.payout)}
                   </div>
                 </div>
 
@@ -1910,32 +2125,319 @@
                 </div>
 
                 <div class="monthly-metric monthly-metric-final">
-                  <div class="monthly-metric-label">
-                    最終粗利
-                  </div>
-                  <div class="monthly-metric-value">
-                    ${yen(finalProfit)}${provisionalMark}
-                  </div>
+                  <button
+                    type="button"
+                    class="monthly-profit-button"
+                    onclick="openMonthlyDetail('${r.key}')"
+                  >
+                    <div class="monthly-metric-label">
+                      最終粗利
+                    </div>
+                    <div class="monthly-metric-value">
+                      ${yen(finalProfit)}${provisionalMark}
+                    </div>
+                    <div class="monthly-profit-hint">
+                      タップして内訳を見る
+                    </div>
+                  </button>
                 </div>
 
               </div>
             </div>
           `;
         }).join("")}
+        </div>
+
+        <div
+          style="
+            margin-top:8px;
+            color:#8a6547;
+            font-size:11px;
+            line-height:1.5;
+            font-weight:700;
+          "
+        >
+          ※印は、原価未登録の商品がその月に販売されているため暫定値です。
+        </div>
       </div>
 
-      <div
-        style="
-          margin-top:8px;
-          color:#8a6547;
-          font-size:11px;
-          line-height:1.5;
-          font-weight:700;
-        "
-      >
-        ※印は、原価未登録の商品がその月に販売されているため暫定値です。
-      </div>
+      <div id="monthlyDetailArea" class="monthly-detail"></div>
     `;
+  }
+
+
+  function buildMonthlyDetailRows(monthKey){
+    const store = document.getElementById("monthlyStore").value;
+
+    const targetStores =
+      store === "全店舗"
+      ? ["南城市地域物産館","南の駅やえせ"]
+      : [store];
+
+    const detailMap = {};
+
+    targetStores.forEach(storeName=>{
+      const monthData =
+        (
+          dashboardData.productMonthly &&
+          dashboardData.productMonthly[storeName]
+        ) || {};
+
+      const rows = monthData[monthKey] || [];
+
+      rows.forEach(r=>{
+        const qty = Number(r.qty || 0);
+        if(qty <= 0) return;
+
+        const settlement =
+          calcStoreSettlement(
+            storeName,
+            r.product,
+            qty
+          );
+
+        const hasCost =
+          Object.prototype.hasOwnProperty.call(
+            PRODUCT_COSTS,
+            r.product
+          );
+
+        const unitCost =
+          hasCost
+          ? Number(PRODUCT_COSTS[r.product] || 0)
+          : 0;
+
+        const cost =
+          unitCost * qty;
+
+        const finalProfit =
+          settlement.payout - cost;
+
+        const key = r.product;
+
+        if(!detailMap[key]){
+          detailMap[key] = {
+            product:r.product,
+            qty:0,
+            sales:0,
+            fee:0,
+            invoiceAdjustment:0,
+            payout:0,
+            cost:0,
+            finalProfit:0,
+            hasUnknownCost:false
+          };
+        }
+
+        detailMap[key].qty += qty;
+        detailMap[key].sales += settlement.sales;
+        detailMap[key].fee += settlement.fee;
+        detailMap[key].invoiceAdjustment += settlement.invoiceAdjustment;
+        detailMap[key].payout += settlement.payout;
+        detailMap[key].cost += cost;
+        detailMap[key].finalProfit += finalProfit;
+
+        if(!hasCost){
+          detailMap[key].hasUnknownCost = true;
+        }
+      });
+    });
+
+    return Object.values(detailMap);
+  }
+
+  function openMonthlyDetail(monthKey){
+    if(!dashboardData) return;
+
+    const listArea =
+      document.getElementById("monthlyListArea");
+
+    const detailArea =
+      document.getElementById("monthlyDetailArea");
+
+    if(!listArea || !detailArea) return;
+
+    const monthLabel =
+      (
+        (dashboardData.months || [])
+        .find(m => m.key === monthKey)
+      );
+
+    const label =
+      monthLabel
+      ? monthLabel.label
+      : monthKey;
+
+    const rows =
+      buildMonthlyDetailRows(monthKey);
+
+    const totals =
+      rows.reduce(
+        (acc,r)=>{
+          acc.qty += r.qty;
+          acc.sales += r.sales;
+          acc.fee += r.fee;
+          acc.invoiceAdjustment += r.invoiceAdjustment;
+          acc.payout += r.payout;
+          acc.cost += r.cost;
+          acc.finalProfit += r.finalProfit;
+          if(r.hasUnknownCost) acc.hasUnknownCost = true;
+          return acc;
+        },
+        {
+          qty:0,
+          sales:0,
+          fee:0,
+          invoiceAdjustment:0,
+          payout:0,
+          cost:0,
+          finalProfit:0,
+          hasUnknownCost:false
+        }
+      );
+
+    detailArea.innerHTML = `
+      <button
+        type="button"
+        class="monthly-back"
+        onclick="closeMonthlyDetail()"
+      >
+        ← 月別へ戻る
+      </button>
+
+      <div class="monthly-detail-title">
+        ${escapeHtml(label)} の内訳
+      </div>
+
+      <div class="monthly-detail-sub">
+        商品ごとの販売個数・売上・販売手数料・インボイス調整・原価・最終粗利です。
+      </div>
+
+      <div class="monthly-detail-summary">
+
+        <div class="monthly-metric">
+          <div class="monthly-metric-label">売上</div>
+          <div class="monthly-metric-value">${yen(totals.sales)}</div>
+        </div>
+
+        <div class="monthly-metric">
+          <div class="monthly-metric-label">販売手数料</div>
+          <div class="monthly-metric-value">${yen(totals.fee)}</div>
+        </div>
+
+        <div class="monthly-metric">
+          <div class="monthly-metric-label">インボイス調整</div>
+          <div class="monthly-metric-value">${yen(totals.invoiceAdjustment)}</div>
+        </div>
+
+        <div class="monthly-metric">
+          <div class="monthly-metric-label">手数料等差引後</div>
+          <div class="monthly-metric-value">${yen(totals.payout)}</div>
+        </div>
+
+        <div class="monthly-metric">
+          <div class="monthly-metric-label">原価</div>
+          <div class="monthly-metric-value">${yen(totals.cost)}</div>
+        </div>
+
+        <div class="monthly-metric monthly-metric-final">
+          <div class="monthly-metric-label">最終粗利</div>
+          <div class="monthly-metric-value">
+            ${yen(totals.finalProfit)}${totals.hasUnknownCost ? " ※" : ""}
+          </div>
+        </div>
+
+      </div>
+
+      <div class="dash-table-wrap">
+        <table class="monthly-detail-table">
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>個数</th>
+              <th>売上</th>
+              <th>手数料</th>
+              <th>インボイス</th>
+              <th>原価</th>
+              <th>粗利</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${rows.length
+              ? rows.map(r=>`
+                  <tr>
+                    <td>
+                      ${escapeHtml(r.product)}
+                      ${r.hasUnknownCost
+                        ? '<div class="monthly-detail-unknown">原価未登録</div>'
+                        : ''
+                      }
+                    </td>
+                    <td>${num(r.qty)}</td>
+                    <td>${yen(r.sales)}</td>
+                    <td>${yen(r.fee)}</td>
+                    <td>${yen(r.invoiceAdjustment)}</td>
+                    <td>
+                      ${r.hasUnknownCost
+                        ? "未登録"
+                        : yen(r.cost)
+                      }
+                    </td>
+                    <td>
+                      ${yen(r.finalProfit)}${r.hasUnknownCost ? " ※" : ""}
+                    </td>
+                  </tr>
+                `).join("")
+              : '<tr><td colspan="7">販売実績はありません。</td></tr>'
+            }
+          </tbody>
+        </table>
+      </div>
+
+      ${totals.hasUnknownCost
+        ? `
+          <div
+            style="
+              margin-top:10px;
+              color:#a44739;
+              font-size:11px;
+              line-height:1.5;
+              font-weight:800;
+            "
+          >
+            ※ 原価未登録の商品を含むため、最終粗利は暫定値です。
+          </div>
+        `
+        : ""
+      }
+    `;
+
+    listArea.classList.add("monthly-list-hidden");
+    detailArea.classList.add("show");
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+  }
+
+  function closeMonthlyDetail(){
+    const listArea =
+      document.getElementById("monthlyListArea");
+
+    const detailArea =
+      document.getElementById("monthlyDetailArea");
+
+    if(!listArea || !detailArea) return;
+
+    detailArea.classList.remove("show");
+    listArea.classList.remove("monthly-list-hidden");
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
   }
 
   function renderProductMonthly(){
@@ -2033,7 +2535,7 @@
 
   function escapeHtml(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
   function num(value){return Number(value||0).toLocaleString('ja-JP')}
-  window.switchView=switchView;window.loadDashboard=loadDashboard;window.renderInventory=renderInventory;window.renderMonthly=renderMonthly;window.renderProductMonthly=renderProductMonthly;
+  window.switchView=switchView;window.loadDashboard=loadDashboard;window.renderInventory=renderInventory;window.renderMonthly=renderMonthly;window.openMonthlyDetail=openMonthlyDetail;window.closeMonthlyDetail=closeMonthlyDetail;window.renderProductMonthly=renderProductMonthly;
 
 
   render();
