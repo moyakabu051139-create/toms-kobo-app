@@ -988,7 +988,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v36</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v37</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -1799,7 +1799,43 @@
     }
 
     const store = document.getElementById("inventoryStore").value;
-    const rows = (dashboardData.inventory && dashboardData.inventory[store]) || [];
+    const backendRows =
+      (dashboardData.inventory && dashboardData.inventory[store]) || [];
+
+    /*
+      Apps Script側にまだ0件の商品が返ってこない場合でも、
+      フロントの商品マスターを基準に在庫0で表示する。
+    */
+    let masterProducts = [];
+
+    if(store === "全店舗"){
+      Object.keys(STORE_PRODUCTS).forEach(storeName=>{
+        (STORE_PRODUCTS[storeName] || []).forEach(p=>{
+          if(!masterProducts.includes(p.name)){
+            masterProducts.push(p.name);
+          }
+        });
+      });
+    }else{
+      masterProducts =
+        (STORE_PRODUCTS[store] || []).map(p=>p.name);
+    }
+
+    const rowMap = {};
+    backendRows.forEach(r=>{
+      rowMap[r.product] = r;
+      if(!masterProducts.includes(r.product)){
+        masterProducts.push(r.product);
+      }
+    });
+
+    const rows = masterProducts.map(product=>{
+      const rec = rowMap[product] || {};
+      return {
+        product,
+        stock:Number(rec.stock || 0)
+      };
+    });
 
     const tableRows = rows.map(r=>{
       const stock = Number(r.stock || 0);
@@ -1840,7 +1876,6 @@
       </div>
     `;
   }
-
 
   function getProductUnitPrice(storeName, productName){
     const list = STORE_PRODUCTS[storeName] || [];
