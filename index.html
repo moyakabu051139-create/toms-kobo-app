@@ -905,6 +905,31 @@
       }
     }
 
+
+    /* ===== 共有「最近の登録」 ===== */
+    .history-meta{
+      color:#735e4d;
+      font-size:11px;
+      line-height:1.45;
+      margin-top:3px;
+    }
+
+    .history-items{
+      margin-top:6px;
+      color:#4b3020;
+      font-size:12px;
+      line-height:1.55;
+      font-weight:700;
+    }
+
+    .history-shared-note{
+      margin:0 0 8px;
+      color:#80634c;
+      font-size:11px;
+      line-height:1.45;
+      font-weight:700;
+    }
+
 </style>
 </head>
 
@@ -988,7 +1013,7 @@
 <div id="app" class="wrap">
 
   <h1>Tom's工房 売上・納品入力</h1>
-  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v41</span></div>
+  <div class="sub">店舗ごとに取扱商品が自動で切り替わります <span style="font-size:11px;opacity:.55">v42</span></div>
   <div class="top-tabs" id="topTabs">
     <button class="top-tab active" type="button" data-view="input" onclick="switchView('input')">入力</button>
     <button class="top-tab" type="button" data-view="inventory" onclick="switchView('inventory')">在庫</button>
@@ -1114,7 +1139,7 @@
         class="smallBtn danger"
         onclick="undoLastBatch()"
       >
-        直前を取消
+        この端末の直前を取消
       </button>
     </div>
 
@@ -1701,7 +1726,17 @@
 
   function drawHistory(){
     const box = document.getElementById("history");
-    const history = localHistory().slice(-5).reverse();
+
+    // Apps Scriptから取得した共有履歴を優先。
+    // 読み込み前だけ、この端末のローカル履歴を仮表示する。
+    const shared =
+      dashboardData && Array.isArray(dashboardData.recentHistory)
+      ? dashboardData.recentHistory
+      : null;
+
+    const history = shared !== null
+      ? shared.slice(0,10)
+      : localHistory().slice(-5).reverse();
 
     if(history.length === 0){
       box.innerHTML =
@@ -1709,17 +1744,36 @@
       return;
     }
 
-    box.innerHTML = history.map(batch=>{
-      const total = batch.items.reduce((sum,x)=>sum+x.qty,0);
+    const sharedNote = shared !== null
+      ? '<div class="history-shared-note">全端末で共通の最新登録です。</div>'
+      : '<div class="history-shared-note">共有履歴を読み込み中です…</div>';
+
+    box.innerHTML = sharedNote + history.map(batch=>{
+      const items = Array.isArray(batch.items) ? batch.items : [];
+      const total = items.reduce((sum,x)=>sum+Number(x.qty||0),0);
+      const itemText = items.length
+        ? items.map(x=>escapeHtml(x.product)+' × '+num(x.qty)).join('<br>')
+        : '内容なし';
+
+      const registeredAt = batch.registeredAt
+        ? '・登録 '+escapeHtml(batch.registeredAt)
+        : '';
 
       return `
         <div class="history-row">
-          <div>
-            <b>${batch.type}</b> ${batch.items.length}商品
-            <br>
-            <span style="color:#735e4d">${batch.date}・${batch.store}</span>
+          <div style="min-width:0;flex:1">
+            <b>${escapeHtml(batch.type || '')}</b>
+            ${items.length}商品
+            <div class="history-meta">
+              ${escapeHtml(batch.date || '')}・${escapeHtml(batch.store || '')}${registeredAt}
+            </div>
+            <div class="history-items">
+              ${itemText}
+            </div>
           </div>
-          <div style="font-weight:900">${total}個</div>
+          <div style="font-weight:900;white-space:nowrap;margin-left:10px">
+            ${num(total)}個
+          </div>
         </div>
       `;
     }).join("");
@@ -1785,7 +1839,7 @@
 
   function setDashboardLoading(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-loading">'+escapeHtml(message)+'</div>'})}
   function setDashboardError(message){['inventoryContent','monthlyContent','productsContent'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="dash-empty">'+escapeHtml(message)+'</div>'})}
-  function renderAllDashboard(){if(!dashboardData)return;renderInventory();renderMonthly();renderProductMonthly();const text=dashboardData.lastUpdated?'最終登録：'+dashboardData.lastUpdated:'データを取得しました';['inventoryUpdated','monthlyUpdated','productsUpdated'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text})}
+  function renderAllDashboard(){if(!dashboardData)return;renderInventory();renderMonthly();renderProductMonthly();drawHistory();const text=dashboardData.lastUpdated?'最終登録：'+dashboardData.lastUpdated:'データを取得しました';['inventoryUpdated','monthlyUpdated','productsUpdated'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text})}
 
   function setupProductMonthOptions(){
     if(!dashboardData||!Array.isArray(dashboardData.months))return;
@@ -2581,6 +2635,7 @@
 
 
   render();
+  loadDashboard(false);
 </script>
 
 </body>
